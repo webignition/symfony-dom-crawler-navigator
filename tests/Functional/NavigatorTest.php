@@ -7,7 +7,6 @@ namespace webignition\SymfonyDomCrawlerNavigator\Tests\Functional;
 use Facebook\WebDriver\WebDriverElement;
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidElementPositionException;
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidPositionExceptionInterface;
-use webignition\SymfonyDomCrawlerNavigator\Exception\UnknownElementException;
 use webignition\SymfonyDomCrawlerNavigator\Model\ElementLocator;
 use webignition\SymfonyDomCrawlerNavigator\Model\LocatorType;
 use webignition\SymfonyDomCrawlerNavigator\Navigator;
@@ -105,25 +104,6 @@ class NavigatorTest extends AbstractTestCase
                 },
             ],
         ];
-    }
-
-    public function testFindElementThrowsUnknownElementException()
-    {
-        $crawler = self::$client->request('GET', '/basic.html');
-        $navigator = Navigator::create($crawler);
-
-        $elementLocator = new ElementLocator(
-            LocatorType::CSS_SELECTOR,
-            '.does-not-exist',
-            1
-        );
-
-        try {
-            $navigator->findElement($elementLocator);
-            $this->fail('UnknownElementException not thrown');
-        } catch (UnknownElementException $unknownElementException) {
-            $this->assertSame($elementLocator, $unknownElementException->getElementLocator());
-        }
     }
 
     /**
