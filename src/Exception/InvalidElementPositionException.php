@@ -4,10 +4,8 @@ namespace webignition\SymfonyDomCrawlerNavigator\Exception;
 
 use webignition\SymfonyDomCrawlerNavigator\Model\ElementLocator;
 
-class InvalidElementPositionException extends \Exception
+class InvalidElementPositionException extends AbstractElementException
 {
-    private $elementLocator;
-
     public function __construct(
         ElementLocator $elementLocator,
         InvalidPositionExceptionInterface $invalidPositionException
@@ -18,13 +16,6 @@ class InvalidElementPositionException extends \Exception
             $elementLocator->getLocator()
         );
 
-        parent::__construct($message, 0, $invalidPositionException);
-
-        $this->elementLocator = $elementLocator;
-    }
-
-    public function getElementLocator(): ?ElementLocator
-    {
-        return $this->elementLocator;
+        parent::__construct($elementLocator, $message, 0, $invalidPositionException);
     }
 }
