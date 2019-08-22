@@ -23,16 +23,6 @@ class PositionCannotBeZeroExceptionTest extends \PHPUnit\Framework\TestCase
         $this->exception = new PositionCannotBeZeroException(self::COLLECTION_COUNT);
     }
 
-    public function testSetElementIdentifier()
-    {
-        $this->assertNull($this->exception->getElementLocator());
-
-        $elementLocator = new ElementLocator('', '', 1);
-        $this->exception->setElementLocator($elementLocator);
-
-        $this->assertSame($elementLocator, $this->exception->getElementLocator());
-    }
-
     public function testGetOrdinalPosition()
     {
         $this->assertSame(0, $this->exception->getOrdinalPosition());

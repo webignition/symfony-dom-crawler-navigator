@@ -24,16 +24,6 @@ class PositionOutOfBoundsExceptionTest extends \PHPUnit\Framework\TestCase
         $this->exception = new PositionOutOfBoundsException(self::ORDINAL_POSITION, self::COLLECTION_COUNT);
     }
 
-    public function testSetElementIdentifier()
-    {
-        $this->assertNull($this->exception->getElementLocator());
-
-        $elementLocator = new ElementLocator('', '', 1);
-        $this->exception->setElementLocator($elementLocator);
-
-        $this->assertSame($elementLocator, $this->exception->getElementLocator());
-    }
-
     public function testGetOrdinalPosition()
     {
         $this->assertSame(self::ORDINAL_POSITION, $this->exception->getOrdinalPosition());
