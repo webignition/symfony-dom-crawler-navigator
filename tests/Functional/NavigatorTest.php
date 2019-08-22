@@ -7,7 +7,7 @@ namespace webignition\SymfonyDomCrawlerNavigator\Tests\Functional;
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidPositionExceptionInterface;
 use webignition\SymfonyDomCrawlerNavigator\Navigator;
 
-class NavigatorTest extends TestCase
+class NavigatorTest extends AbstractTestCase
 {
     public function testCreate()
     {

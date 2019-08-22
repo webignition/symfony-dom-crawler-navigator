@@ -4,7 +4,6 @@
 
 namespace webignition\SymfonyDomCrawlerNavigator\Tests\Unit\Exception;
 
-use webignition\SymfonyDomCrawlerNavigator\Exception\PositionCannotBeZeroException;
 use webignition\SymfonyDomCrawlerNavigator\Exception\PositionOutOfBoundsException;
 
 class PositionOutOfBoundsExceptionTest extends \PHPUnit\Framework\TestCase
@@ -13,7 +12,7 @@ class PositionOutOfBoundsExceptionTest extends \PHPUnit\Framework\TestCase
     const ORDINAL_POSITION = 4;
 
     /**
-     * @var PositionCannotBeZeroException
+     * @var PositionOutOfBoundsException
      */
     private $exception;
 
