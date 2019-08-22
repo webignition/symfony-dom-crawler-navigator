@@ -7,7 +7,7 @@ namespace webignition\SymfonyDomCrawlerNavigator\Tests\Functional;
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidPositionExceptionInterface;
 use webignition\SymfonyDomCrawlerNavigator\Navigator;
 
-class DataSetLoaderTest extends TestCase
+class NavigatorTest extends TestCase
 {
     public function testCreate()
     {
