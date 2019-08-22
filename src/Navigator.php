@@ -44,12 +44,7 @@ class Navigator
     public function findElement(ElementLocator $elementLocator, ?ElementLocator $scopeLocator = null): WebDriverElement
     {
         try {
-            $scopeCrawler = $scopeLocator instanceof ElementLocator
-                ? $this->crawlerFactory->createElementCrawler($scopeLocator, $this->crawler)
-                : $this->crawler;
-
-            $elementCrawler = $this->crawlerFactory->createElementCrawler($elementLocator, $scopeCrawler);
-            $element = $elementCrawler->getElement(0);
+            $element = $this->doFindElement($elementLocator, $scopeLocator);
 
             if ($element instanceof WebDriverElement) {
                 return $element;
@@ -63,5 +58,42 @@ class Navigator
         }
 
         throw new UnknownElementException($elementLocator);
+    }
+
+    /**
+     * @param ElementLocator $elementLocator
+     * @param ElementLocator|null $scopeLocator
+     *
+     * @return bool
+     */
+    public function hasElement(ElementLocator $elementLocator, ?ElementLocator $scopeLocator = null): bool
+    {
+        try {
+            return $this->doFindElement($elementLocator, $scopeLocator) instanceof WebDriverElement;
+        } catch (UnknownElementException | InvalidElementPositionException $exception) {
+            return false;
+        }
+    }
+
+    /**
+     * @param ElementLocator $elementLocator
+     * @param ElementLocator $scopeLocator
+     *
+     * @return WebDriverElement|null
+     *
+     * @throws InvalidElementPositionException
+     * @throws UnknownElementException
+     */
+    private function doFindElement(
+        ElementLocator $elementLocator,
+        ?ElementLocator $scopeLocator = null
+    ): ?WebDriverElement {
+        $scopeCrawler = $scopeLocator instanceof ElementLocator
+            ? $this->crawlerFactory->createElementCrawler($scopeLocator, $this->crawler)
+            : $this->crawler;
+
+        $elementCrawler = $this->crawlerFactory->createElementCrawler($elementLocator, $scopeCrawler);
+
+        return $elementCrawler->getElement(0);
     }
 }
