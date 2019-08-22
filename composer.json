@@ -1,8 +1,8 @@
 {
-    "name": "webignition/symfony-dom-crawler-navigator",
-    "description": "Navigate around a symfony/dom-crawler using convenience methods",
+    "name": "webignition/symfony-panther-dom-crawler-navigator",
+    "description": "Navigate around a symfony panther dom crawler using convenience methods",
     "keywords": [],
-    "homepage": "https://github.com/webignition/symfony-dom-crawler-navigator",
+    "homepage": "https://github.com/webignition/symfony-panther-dom-crawler-navigatorr",
     "type": "library",
     "license": "MIT",
     "authors": [
