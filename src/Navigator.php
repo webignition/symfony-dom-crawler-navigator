@@ -6,6 +6,7 @@ use Facebook\WebDriver\WebDriverElement;
 use Symfony\Component\Panther\DomCrawler\Crawler;
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidElementPositionException;
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidPositionExceptionInterface;
+use webignition\SymfonyDomCrawlerNavigator\Exception\UnknownElementException;
 use webignition\SymfonyDomCrawlerNavigator\Model\ElementLocator;
 use webignition\SymfonyDomCrawlerNavigator\Model\LocatorType;
 
@@ -34,6 +35,7 @@ class Navigator
      * @return WebDriverElement
      *
      * @throws InvalidElementPositionException
+     * @throws UnknownElementException
      */
     public function findElement(ElementLocator $elementLocator): WebDriverElement
     {
@@ -44,6 +46,10 @@ class Navigator
             : $this->crawler->filterXPath($locator);
 
         $collectionCount = count($collection);
+
+        if (0 === $collectionCount) {
+            throw new UnknownElementException($elementLocator);
+        }
 
         try {
             $crawlerPosition = $this->collectionPositionFinder->find(
