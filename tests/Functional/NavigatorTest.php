@@ -108,6 +108,74 @@ class NavigatorTest extends AbstractTestCase
     }
 
     /**
+     * @dataProvider hasElementSuccessDataProvider
+     */
+    public function testHasElement(
+        ElementLocator $elementIdentifier,
+        ?ElementLocator $scope,
+        bool $expectedHasElement
+    ) {
+        $crawler = self::$client->request('GET', '/basic.html');
+        $navigator = Navigator::create($crawler);
+
+        $this->assertSame($expectedHasElement, $navigator->hasElement($elementIdentifier, $scope));
+    }
+
+    public function hasElementSuccessDataProvider(): array
+    {
+        return [
+            'existent element without scope' => [
+                'elementIdentifier' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    'h1',
+                    1
+                ),
+                'scopeLocator' => null,
+                'expectedHasElement' => true,
+            ],
+            'existent element inside scope' => [
+                'elementIdentifier' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    'input',
+                    1
+                ),
+                'scopeLocator' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    'form[action="/action2"]',
+                    1
+                ),
+                'expectedHasElement' => true,
+            ],
+            'existent scope contains non-existent element' => [
+                'elementLocator' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    '.does-not-exist',
+                    1
+                ),
+                'scopeLocator' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    'main',
+                    1
+                ),
+                'expectedHasElement' => false,
+            ],
+            'non-existent scope' => [
+                'elementLocator' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    'input',
+                    1
+                ),
+                'scopeLocator' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    '.does-not-exist',
+                    1
+                ),
+                'expectedHasElement' => false,
+            ],
+        ];
+    }
+
+    /**
      * @dataProvider findThrowsUnknownElementExceptionDataProvider
      */
     public function testFindElementThrowsUnknownElementException(
@@ -118,13 +186,7 @@ class NavigatorTest extends AbstractTestCase
     ) {
         $crawler = self::$client->request('GET', '/basic.html');
         $navigator = Navigator::create($crawler);
-//
-//        $elementLocator = new ElementLocator(
-//            LocatorType::CSS_SELECTOR,
-//            '.does-not-exist',
-//            1
-//        );
-//
+
         try {
             $navigator->findElement($elementLocator, $scopeLocator);
             $this->fail('UnknownElementException not thrown');
