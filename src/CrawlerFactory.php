@@ -18,7 +18,7 @@ class CrawlerFactory
         $this->collectionPositionFinder = $collectionPositionFinder;
     }
 
-    public static function create(Crawler $crawler): CrawlerFactory
+    public static function create(): CrawlerFactory
     {
         return new CrawlerFactory(
             new CollectionPositionFinder()

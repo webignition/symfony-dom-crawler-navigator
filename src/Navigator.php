@@ -5,27 +5,25 @@ namespace webignition\SymfonyDomCrawlerNavigator;
 use Facebook\WebDriver\WebDriverElement;
 use Symfony\Component\Panther\DomCrawler\Crawler;
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidElementPositionException;
-use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidPositionExceptionInterface;
 use webignition\SymfonyDomCrawlerNavigator\Exception\UnknownElementException;
 use webignition\SymfonyDomCrawlerNavigator\Model\ElementLocator;
-use webignition\SymfonyDomCrawlerNavigator\Model\LocatorType;
 
 class Navigator
 {
     private $crawler;
-    private $collectionPositionFinder;
+    private $crawlerFactory;
 
-    public function __construct(Crawler $crawler, CollectionPositionFinder $collectionPositionFinder)
+    public function __construct(Crawler $crawler, CrawlerFactory $crawlerFactory)
     {
         $this->crawler = $crawler;
-        $this->collectionPositionFinder = $collectionPositionFinder;
+        $this->crawlerFactory = $crawlerFactory;
     }
 
     public static function create(Crawler $crawler): Navigator
     {
         return new Navigator(
             $crawler,
-            new CollectionPositionFinder()
+            CrawlerFactory::create()
         );
     }
 
@@ -40,49 +38,12 @@ class Navigator
      */
     public function findElement(ElementLocator $elementLocator, ?ElementLocator $scope = null): ?WebDriverElement
     {
-        if ($scope instanceof ElementLocator) {
-            $scopeCrawler = $this->createElementCrawler($scope, $this->crawler);
-        } else {
-            $scopeCrawler = $this->crawler;
-        }
+        $scopeCrawler = $scope instanceof ElementLocator
+            ? $this->crawlerFactory->createElementCrawler($scope, $this->crawler)
+            : $this->crawler;
 
-        $elementCrawler = $this->createElementCrawler($elementLocator, $scopeCrawler);
+        $elementCrawler = $this->crawlerFactory->createElementCrawler($elementLocator, $scopeCrawler);
 
         return $elementCrawler->getElement(0);
-    }
-
-    /**
-     * @param ElementLocator $elementLocator
-     * @param Crawler $crawler
-     *
-     * @return Crawler
-     *
-     * @throws InvalidElementPositionException
-     * @throws UnknownElementException
-     */
-    private function createElementCrawler(ElementLocator $elementLocator, Crawler $crawler): Crawler
-    {
-        $locator = $elementLocator->getLocator();
-
-        $collection = $elementLocator->getLocatorType() === LocatorType::CSS_SELECTOR
-            ? $crawler->filter($locator)
-            : $crawler->filterXPath($locator);
-
-        $collectionCount = count($collection);
-
-        if (0 === $collectionCount) {
-            throw new UnknownElementException($elementLocator);
-        }
-
-        try {
-            $crawlerPosition = $this->collectionPositionFinder->find(
-                $elementLocator->getOrdinalPosition(),
-                $collectionCount
-            );
-
-            return $collection->eq($crawlerPosition);
-        } catch (InvalidPositionExceptionInterface $invalidPositionException) {
-            throw new InvalidElementPositionException($elementLocator, $invalidPositionException);
-        }
     }
 }
