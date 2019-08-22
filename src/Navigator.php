@@ -31,19 +31,42 @@ class Navigator
 
     /**
      * @param ElementLocator $elementLocator
+     * @param ElementLocator|null $scope
      *
-     * @return WebDriverElement
+     * @return WebDriverElement|null
      *
      * @throws InvalidElementPositionException
      * @throws UnknownElementException
      */
-    public function findElement(ElementLocator $elementLocator): WebDriverElement
+    public function findElement(ElementLocator $elementLocator, ?ElementLocator $scope = null): ?WebDriverElement
+    {
+        if ($scope instanceof ElementLocator) {
+            $scopeCrawler = $this->createElementCrawler($scope, $this->crawler);
+        } else {
+            $scopeCrawler = $this->crawler;
+        }
+
+        $elementCrawler = $this->createElementCrawler($elementLocator, $scopeCrawler);
+
+        return $elementCrawler->getElement(0);
+    }
+
+    /**
+     * @param ElementLocator $elementLocator
+     * @param Crawler $crawler
+     *
+     * @return Crawler
+     *
+     * @throws InvalidElementPositionException
+     * @throws UnknownElementException
+     */
+    private function createElementCrawler(ElementLocator $elementLocator, Crawler $crawler): Crawler
     {
         $locator = $elementLocator->getLocator();
 
         $collection = $elementLocator->getLocatorType() === LocatorType::CSS_SELECTOR
-            ? $this->crawler->filter($locator)
-            : $this->crawler->filterXPath($locator);
+            ? $crawler->filter($locator)
+            : $crawler->filterXPath($locator);
 
         $collectionCount = count($collection);
 
@@ -57,7 +80,7 @@ class Navigator
                 $collectionCount
             );
 
-            return $collection->getElement($crawlerPosition);
+            return $collection->eq($crawlerPosition);
         } catch (InvalidPositionExceptionInterface $invalidPositionException) {
             throw new InvalidElementPositionException($elementLocator, $invalidPositionException);
         }
