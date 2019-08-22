@@ -4,6 +4,7 @@
 
 namespace webignition\SymfonyDomCrawlerNavigator\Tests\Functional;
 
+use Facebook\WebDriver\WebDriverElement;
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidElementPositionException;
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidPositionExceptionInterface;
 use webignition\SymfonyDomCrawlerNavigator\Exception\UnknownElementException;
@@ -24,14 +25,17 @@ class NavigatorTest extends AbstractTestCase
     /**
      * @dataProvider findElementSuccessDataProvider
      */
-    public function testFindElementSuccess(ElementLocator $elementIdentifier, string $expectedText)
-    {
+    public function testFindElementSuccess(
+        ElementLocator $elementIdentifier,
+        ?ElementLocator $scope,
+        callable $assertions
+    ) {
         $crawler = self::$client->request('GET', '/basic.html');
         $navigator = Navigator::create($crawler);
 
-        $element = $navigator->findElement($elementIdentifier);
+        $element = $navigator->findElement($elementIdentifier, $scope);
 
-        $this->assertSame($expectedText, $element->getText());
+        $assertions($element);
     }
 
     public function findElementSuccessDataProvider(): array
@@ -43,7 +47,10 @@ class NavigatorTest extends AbstractTestCase
                     'h1',
                     1
                 ),
-                'expectedText' => 'Hello',
+                'scope' => null,
+                'assertions' => function (WebDriverElement $element) {
+                    $this->assertSame('Hello', $element->getText());
+                },
             ],
             'first h1 with xpath expression' => [
                 'elementIdentifier' => new ElementLocator(
@@ -51,7 +58,10 @@ class NavigatorTest extends AbstractTestCase
                     '//h1',
                     1
                 ),
-                'expectedText' => 'Hello',
+                'scope' => null,
+                'assertions' => function (WebDriverElement $element) {
+                    $this->assertSame('Hello', $element->getText());
+                },
             ],
             'second h1 with css selector' => [
                 'elementIdentifier' => new ElementLocator(
@@ -59,7 +69,40 @@ class NavigatorTest extends AbstractTestCase
                     'h1',
                     2
                 ),
-                'expectedText' => 'Main',
+                'scope' => null,
+                'assertions' => function (WebDriverElement $element) {
+                    $this->assertSame('Main', $element->getText());
+                },
+            ],
+            'css-selector input scoped to css-selector second form' => [
+                'elementIdentifier' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    'input',
+                    1
+                ),
+                'scope' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    'form[action="/action2"]',
+                    1
+                ),
+                'assertions' => function (WebDriverElement $element) {
+                    $this->assertSame('input-2', $element->getAttribute('name'));
+                },
+            ],
+            'css-selector input scoped to xpath-expression second form' => [
+                'elementIdentifier' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    'input',
+                    1
+                ),
+                'scope' => new ElementLocator(
+                    LocatorType::XPATH_EXPRESSION,
+                    '//form',
+                    2
+                ),
+                'assertions' => function (WebDriverElement $element) {
+                    $this->assertSame('input-2', $element->getAttribute('name'));
+                },
             ],
         ];
     }
