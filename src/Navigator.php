@@ -29,24 +29,32 @@ class Navigator
 
     /**
      * @param ElementLocator $elementLocator
-     * @param ElementLocator|null $scope
+     * @param ElementLocator|null $scopeLocator
      *
      * @return WebDriverElement
      *
      * @throws InvalidElementPositionException
      * @throws UnknownElementException
      */
-    public function findElement(ElementLocator $elementLocator, ?ElementLocator $scope = null): WebDriverElement
+    public function findElement(ElementLocator $elementLocator, ?ElementLocator $scopeLocator = null): WebDriverElement
     {
-        $scopeCrawler = $scope instanceof ElementLocator
-            ? $this->crawlerFactory->createElementCrawler($scope, $this->crawler)
-            : $this->crawler;
+        try {
+            $scopeCrawler = $scopeLocator instanceof ElementLocator
+                ? $this->crawlerFactory->createElementCrawler($scopeLocator, $this->crawler)
+                : $this->crawler;
 
-        $elementCrawler = $this->crawlerFactory->createElementCrawler($elementLocator, $scopeCrawler);
-        $element = $elementCrawler->getElement(0);
+            $elementCrawler = $this->crawlerFactory->createElementCrawler($elementLocator, $scopeCrawler);
+            $element = $elementCrawler->getElement(0);
 
-        if ($element instanceof WebDriverElement) {
-            return $element;
+            if ($element instanceof WebDriverElement) {
+                return $element;
+            }
+        } catch (UnknownElementException $unknownElementException) {
+            if ($scopeLocator instanceof ElementLocator) {
+                $unknownElementException->setScopeLocator($scopeLocator);
+            }
+
+            throw $unknownElementException;
         }
 
         throw new UnknownElementException($elementLocator);

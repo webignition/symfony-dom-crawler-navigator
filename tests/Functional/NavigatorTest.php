@@ -7,6 +7,7 @@ namespace webignition\SymfonyDomCrawlerNavigator\Tests\Functional;
 use Facebook\WebDriver\WebDriverElement;
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidElementPositionException;
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidPositionExceptionInterface;
+use webignition\SymfonyDomCrawlerNavigator\Exception\UnknownElementException;
 use webignition\SymfonyDomCrawlerNavigator\Model\ElementLocator;
 use webignition\SymfonyDomCrawlerNavigator\Model\LocatorType;
 use webignition\SymfonyDomCrawlerNavigator\Navigator;
@@ -46,7 +47,7 @@ class NavigatorTest extends AbstractTestCase
                     'h1',
                     1
                 ),
-                'scope' => null,
+                'scopeLocator' => null,
                 'assertions' => function (WebDriverElement $element) {
                     $this->assertSame('Hello', $element->getText());
                 },
@@ -57,7 +58,7 @@ class NavigatorTest extends AbstractTestCase
                     '//h1',
                     1
                 ),
-                'scope' => null,
+                'scopeLocator' => null,
                 'assertions' => function (WebDriverElement $element) {
                     $this->assertSame('Hello', $element->getText());
                 },
@@ -68,7 +69,7 @@ class NavigatorTest extends AbstractTestCase
                     'h1',
                     2
                 ),
-                'scope' => null,
+                'scopeLocator' => null,
                 'assertions' => function (WebDriverElement $element) {
                     $this->assertSame('Main', $element->getText());
                 },
@@ -79,7 +80,7 @@ class NavigatorTest extends AbstractTestCase
                     'input',
                     1
                 ),
-                'scope' => new ElementLocator(
+                'scopeLocator' => new ElementLocator(
                     LocatorType::CSS_SELECTOR,
                     'form[action="/action2"]',
                     1
@@ -94,7 +95,7 @@ class NavigatorTest extends AbstractTestCase
                     'input',
                     1
                 ),
-                'scope' => new ElementLocator(
+                'scopeLocator' => new ElementLocator(
                     LocatorType::XPATH_EXPRESSION,
                     '//form',
                     2
@@ -102,6 +103,97 @@ class NavigatorTest extends AbstractTestCase
                 'assertions' => function (WebDriverElement $element) {
                     $this->assertSame('input-2', $element->getAttribute('name'));
                 },
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider findThrowsUnknownElementExceptionDataProvider
+     */
+    public function testFindElementThrowsUnknownElementException(
+        ElementLocator $elementLocator,
+        ?ElementLocator $scopeLocator,
+        ElementLocator $expectedExceptionElementLocator,
+        ?ElementLocator $expectedExceptionScopeLocator
+    ) {
+        $crawler = self::$client->request('GET', '/basic.html');
+        $navigator = Navigator::create($crawler);
+//
+//        $elementLocator = new ElementLocator(
+//            LocatorType::CSS_SELECTOR,
+//            '.does-not-exist',
+//            1
+//        );
+//
+        try {
+            $navigator->findElement($elementLocator, $scopeLocator);
+            $this->fail('UnknownElementException not thrown');
+        } catch (UnknownElementException $unknownElementException) {
+            $this->assertEquals($expectedExceptionElementLocator, $unknownElementException->getElementLocator());
+            $this->assertEquals($expectedExceptionScopeLocator, $unknownElementException->getScopeLocator());
+        }
+    }
+
+    public function findThrowsUnknownElementExceptionDataProvider(): array
+    {
+        return [
+            'element locator refers to unknown element, without scope' => [
+                'elementLocator' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    '.does-not-exist',
+                    1
+                ),
+                'scopeLocator' => null,
+                'expectedExceptionElementLocator' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    '.does-not-exist',
+                    1
+                ),
+                'expectedExceptionScope' => null,
+            ],
+            'element locator refers to unknown element, with scope' => [
+                'elementLocator' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    '.does-not-exist',
+                    1
+                ),
+                'scopeLocator' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    'main',
+                    1
+                ),
+                'expectedExceptionElementLocator' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    '.does-not-exist',
+                    1
+                ),
+                'expectedExceptionScope' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    'main',
+                    1
+                ),
+            ],
+            'scope locator refers to unknown element' => [
+                'elementLocator' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    'input',
+                    1
+                ),
+                'scopeLocator' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    '.does-not-exist',
+                    1
+                ),
+                'expectedExceptionElementLocator' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    '.does-not-exist',
+                    1
+                ),
+                'expectedExceptionScope' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    '.does-not-exist',
+                    1
+                ),
             ],
         ];
     }
