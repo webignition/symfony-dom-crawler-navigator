@@ -17,13 +17,10 @@ class CrawlerFactoryTest extends AbstractTestCase
     /**
      * @dataProvider createElementCrawlerSuccessDataProvider
      */
-    public function testCreateElementCrawlerSuccess(
-        ElementLocator $elementLocator,
-        ?ElementLocator $scope,
-        callable $assertions
-    ) {
+    public function testCreateElementCrawlerSuccess(ElementLocator $elementLocator, callable $assertions)
+    {
         $crawler = self::$client->request('GET', '/basic.html');
-        $crawlerFactory = CrawlerFactory::create($crawler);
+        $crawlerFactory = CrawlerFactory::create();
 
         $elementCrawler = $crawlerFactory->createElementCrawler($elementLocator, $crawler);
         $this->assertCount(1, $elementCrawler);
@@ -40,7 +37,6 @@ class CrawlerFactoryTest extends AbstractTestCase
                     'h1',
                     1
                 ),
-                'scope' => null,
                 'assertions' => function (Crawler $crawler) {
                     $this->assertSame('Hello', $crawler->getText());
                 },
@@ -51,7 +47,6 @@ class CrawlerFactoryTest extends AbstractTestCase
                     '//h1',
                     1
                 ),
-                'scope' => null,
                 'assertions' => function (Crawler $crawler) {
                     $this->assertSame('Hello', $crawler->getText());
                 },
@@ -62,7 +57,6 @@ class CrawlerFactoryTest extends AbstractTestCase
                     'h1',
                     2
                 ),
-                'scope' => null,
                 'assertions' => function (Crawler $crawler) {
                     $this->assertSame('Main', $crawler->getText());
                 },
@@ -73,7 +67,7 @@ class CrawlerFactoryTest extends AbstractTestCase
     public function testCreateElementCrawlerThrowsUnknownElementException()
     {
         $crawler = self::$client->request('GET', '/basic.html');
-        $crawlerFactory = CrawlerFactory::create($crawler);
+        $crawlerFactory = CrawlerFactory::create();
 
         $elementLocator = new ElementLocator(
             LocatorType::CSS_SELECTOR,
@@ -97,7 +91,7 @@ class CrawlerFactoryTest extends AbstractTestCase
         int $ordinalPosition
     ) {
         $crawler = self::$client->request('GET', '/basic.html');
-        $crawlerFactory = CrawlerFactory::create($crawler);
+        $crawlerFactory = CrawlerFactory::create();
 
         $elementLocator = new ElementLocator(
             LocatorType::CSS_SELECTOR,
