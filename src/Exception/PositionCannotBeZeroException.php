@@ -7,7 +7,7 @@ class PositionCannotBeZeroException extends AbstractInvalidPositionException
     public function __construct(int $collectionCount)
     {
         $message = sprintf(
-            'Position cannot be zero. Allowable positions: +/-%s',
+            'Position cannot be zero. Allowable positions: +/-%d',
             $collectionCount
         );
 

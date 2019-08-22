@@ -7,7 +7,7 @@ class PositionOutOfBoundsException extends AbstractInvalidPositionException
     public function __construct(int $ordinalPosition, int $collectionCount)
     {
         $message = sprintf(
-            'Position "%i" out of bounds for collection of size "%i". Allowable positions: +/-%i',
+            'Position "%d" out of bounds for collection of size "%d". Allowable positions: +/-%d',
             $ordinalPosition,
             $collectionCount,
             $collectionCount
