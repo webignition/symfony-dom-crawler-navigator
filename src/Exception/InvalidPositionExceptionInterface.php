@@ -2,10 +2,12 @@
 
 namespace webignition\SymfonyDomCrawlerNavigator\Exception;
 
+use webignition\SymfonyDomCrawlerNavigator\Model\ElementLocator;
+
 interface InvalidPositionExceptionInterface extends \Throwable
 {
     public function getOrdinalPosition(): int;
     public function getCollectionCount(): int;
-    public function setLocator(string $locator);
-    public function getLocator(): string;
+    public function setElementLocator(ElementLocator $elementIdentifier);
+    public function getElementLocator(): ?ElementLocator;
 }

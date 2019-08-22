@@ -5,6 +5,8 @@
 namespace webignition\SymfonyDomCrawlerNavigator\Tests\Functional;
 
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidPositionExceptionInterface;
+use webignition\SymfonyDomCrawlerNavigator\Model\ElementLocator;
+use webignition\SymfonyDomCrawlerNavigator\Model\LocatorType;
 use webignition\SymfonyDomCrawlerNavigator\Navigator;
 
 class NavigatorTest extends AbstractTestCase
@@ -20,16 +22,12 @@ class NavigatorTest extends AbstractTestCase
     /**
      * @dataProvider findElementSuccessDataProvider
      */
-    public function testFindElementSuccess(
-        string $locatorType,
-        string $locator,
-        int $ordinalPosition,
-        string $expectedText
-    ) {
+    public function testFindElementSuccess(ElementLocator $elementIdentifier, string $expectedText)
+    {
         $crawler = self::$client->request('GET', '/basic.html');
         $navigator = Navigator::create($crawler);
 
-        $element = $navigator->findElement($locatorType, $locator, $ordinalPosition);
+        $element = $navigator->findElement($elementIdentifier);
 
         $this->assertSame($expectedText, $element->getText());
     }
@@ -38,21 +36,27 @@ class NavigatorTest extends AbstractTestCase
     {
         return [
             'first h1 with css selector' => [
-                'locatorType' => Navigator::LOCATOR_CSS_SELECTOR,
-                'locator' => 'h1',
-                'ordinalPosition' => 1,
+                'elementIdentifier' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    'h1',
+                    1
+                ),
                 'expectedText' => 'Hello',
             ],
             'first h1 with xpath expression' => [
-                'locatorType' => Navigator::LOCATOR_XPATH_EXPRESSION,
-                'locator' => '//h1',
-                'ordinalPosition' => 1,
+                'elementIdentifier' => new ElementLocator(
+                    LocatorType::XPATH_EXPRESSION,
+                    '//h1',
+                    1
+                ),
                 'expectedText' => 'Hello',
             ],
             'second h1 with css selector' => [
-                'locatorType' => Navigator::LOCATOR_CSS_SELECTOR,
-                'locator' => 'h1',
-                'ordinalPosition' => 2,
+                'elementIdentifier' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    'h1',
+                    2
+                ),
                 'expectedText' => 'Main',
             ],
         ];
@@ -66,12 +70,18 @@ class NavigatorTest extends AbstractTestCase
         $crawler = self::$client->request('GET', '/basic.html');
         $navigator = Navigator::create($crawler);
 
+        $elementLocator = new ElementLocator(
+            LocatorType::CSS_SELECTOR,
+            $cssLocator,
+            $ordinalPosition
+        );
+
         try {
-            $navigator->findElement(Navigator::LOCATOR_CSS_SELECTOR, $cssLocator, $ordinalPosition);
+            $navigator->findElement($elementLocator);
             $this->fail('InvalidPositionExceptionInterface instance not thrown');
         } catch (InvalidPositionExceptionInterface $invalidPositionException) {
             $this->assertSame($ordinalPosition, $invalidPositionException->getOrdinalPosition());
-            $this->assertSame($cssLocator, $invalidPositionException->getLocator());
+            $this->assertSame($elementLocator, $invalidPositionException->getElementLocator());
         }
     }
 
