@@ -22,11 +22,6 @@ abstract class AbstractInvalidPositionException extends \Exception implements In
         parent::__construct($message);
     }
 
-    public function setElementLocator(ElementLocator $elementLocator)
-    {
-        $this->elementLocator = $elementLocator;
-    }
-
     public function getOrdinalPosition(): int
     {
         return $this->ordinalPosition;
@@ -35,10 +30,5 @@ abstract class AbstractInvalidPositionException extends \Exception implements In
     public function getCollectionCount(): int
     {
         return $this->collectionCount;
-    }
-
-    public function getElementLocator(): ?ElementLocator
-    {
-        return $this->elementLocator;
     }
 }

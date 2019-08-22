@@ -4,6 +4,7 @@
 
 namespace webignition\SymfonyDomCrawlerNavigator\Tests\Functional;
 
+use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidElementPositionException;
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidPositionExceptionInterface;
 use webignition\SymfonyDomCrawlerNavigator\Model\ElementLocator;
 use webignition\SymfonyDomCrawlerNavigator\Model\LocatorType;
@@ -79,9 +80,15 @@ class NavigatorTest extends AbstractTestCase
         try {
             $navigator->findElement($elementLocator);
             $this->fail('InvalidPositionExceptionInterface instance not thrown');
-        } catch (InvalidPositionExceptionInterface $invalidPositionException) {
-            $this->assertSame($ordinalPosition, $invalidPositionException->getOrdinalPosition());
-            $this->assertSame($elementLocator, $invalidPositionException->getElementLocator());
+        } catch (InvalidElementPositionException $invalidElementPositionException) {
+            $this->assertSame($elementLocator, $invalidElementPositionException->getElementLocator());
+
+            $previousException = $invalidElementPositionException->getPrevious();
+            $this->assertInstanceOf(InvalidPositionExceptionInterface::class, $previousException);
+
+            if ($previousException instanceof InvalidPositionExceptionInterface) {
+                $this->assertSame($previousException->getOrdinalPosition(), $elementLocator->getOrdinalPosition());
+            }
         }
     }
 

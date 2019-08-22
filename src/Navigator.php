@@ -4,6 +4,7 @@ namespace webignition\SymfonyDomCrawlerNavigator;
 
 use Facebook\WebDriver\WebDriverElement;
 use Symfony\Component\Panther\DomCrawler\Crawler;
+use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidElementPositionException;
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidPositionExceptionInterface;
 use webignition\SymfonyDomCrawlerNavigator\Model\ElementLocator;
 use webignition\SymfonyDomCrawlerNavigator\Model\LocatorType;
@@ -28,17 +29,17 @@ class Navigator
     }
 
     /**
-     * @param ElementLocator $elementIdentifier
+     * @param ElementLocator $elementLocator
      *
      * @return WebDriverElement
      *
-     * @throws InvalidPositionExceptionInterface
+     * @throws InvalidElementPositionException
      */
-    public function findElement(ElementLocator $elementIdentifier): WebDriverElement
+    public function findElement(ElementLocator $elementLocator): WebDriverElement
     {
-        $locator = $elementIdentifier->getLocator();
+        $locator = $elementLocator->getLocator();
 
-        $collection = $elementIdentifier->getLocatorType() === LocatorType::CSS_SELECTOR
+        $collection = $elementLocator->getLocatorType() === LocatorType::CSS_SELECTOR
             ? $this->crawler->filter($locator)
             : $this->crawler->filterXPath($locator);
 
@@ -46,15 +47,13 @@ class Navigator
 
         try {
             $crawlerPosition = $this->collectionPositionFinder->find(
-                $elementIdentifier->getOrdinalPosition(),
+                $elementLocator->getOrdinalPosition(),
                 $collectionCount
             );
 
             return $collection->getElement($crawlerPosition);
         } catch (InvalidPositionExceptionInterface $invalidPositionException) {
-            $invalidPositionException->setElementLocator($elementIdentifier);
-
-            throw $invalidPositionException;
+            throw new InvalidElementPositionException($elementLocator, $invalidPositionException);
         }
     }
 }
