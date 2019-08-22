@@ -38,4 +38,22 @@ class NavigatorTest extends \PHPUnit\Framework\TestCase
             $this->assertSame($elementLocator, $unknownElementException->getElementLocator());
         }
     }
+
+    public function testSetCrawler()
+    {
+        $crawler = new Crawler([], \Mockery::mock(WebDriver::class));
+        $crawlerFactory = \Mockery::mock(CrawlerFactory::class);
+
+        $navigator = new Navigator($crawler, $crawlerFactory);
+
+        $reflector = new \ReflectionObject($navigator);
+        $property = $reflector->getProperty('crawler');
+        $property->setAccessible(true);
+
+        $this->assertSame($property->getValue($navigator), $crawler);
+
+        $newCrawler = new Crawler([], \Mockery::mock(WebDriver::class));
+        $navigator->setCrawler($newCrawler);
+        $this->assertSame($property->getValue($navigator), $newCrawler);
+    }
 }
