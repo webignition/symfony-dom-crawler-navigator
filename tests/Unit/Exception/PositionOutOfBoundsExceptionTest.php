@@ -5,6 +5,7 @@
 namespace webignition\SymfonyDomCrawlerNavigator\Tests\Unit\Exception;
 
 use webignition\SymfonyDomCrawlerNavigator\Exception\PositionOutOfBoundsException;
+use webignition\SymfonyDomCrawlerNavigator\Model\ElementLocator;
 
 class PositionOutOfBoundsExceptionTest extends \PHPUnit\Framework\TestCase
 {
@@ -23,14 +24,14 @@ class PositionOutOfBoundsExceptionTest extends \PHPUnit\Framework\TestCase
         $this->exception = new PositionOutOfBoundsException(self::ORDINAL_POSITION, self::COLLECTION_COUNT);
     }
 
-    public function testSetLocator()
+    public function testSetElementIdentifier()
     {
-        $this->assertSame('', $this->exception->getLocator());
+        $this->assertNull($this->exception->getElementLocator());
 
-        $locator = '.css-selector';
-        $this->exception->setLocator($locator);
+        $elementLocator = new ElementLocator('', '', 1);
+        $this->exception->setElementLocator($elementLocator);
 
-        $this->assertSame($locator, $this->exception->getLocator());
+        $this->assertSame($elementLocator, $this->exception->getElementLocator());
     }
 
     public function testGetOrdinalPosition()

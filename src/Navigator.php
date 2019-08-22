@@ -5,12 +5,11 @@ namespace webignition\SymfonyDomCrawlerNavigator;
 use Facebook\WebDriver\WebDriverElement;
 use Symfony\Component\Panther\DomCrawler\Crawler;
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidPositionExceptionInterface;
+use webignition\SymfonyDomCrawlerNavigator\Model\ElementLocator;
+use webignition\SymfonyDomCrawlerNavigator\Model\LocatorType;
 
 class Navigator
 {
-    const LOCATOR_CSS_SELECTOR = 'css-selector';
-    const LOCATOR_XPATH_EXPRESSION = 'xpath-expression';
-
     private $crawler;
     private $collectionPositionFinder;
 
@@ -29,31 +28,31 @@ class Navigator
     }
 
     /**
-     * @param string $locatorType
-     * @param string $locator
-     * @param int $ordinalPosition
+     * @param ElementLocator $elementIdentifier
      *
      * @return WebDriverElement
      *
      * @throws InvalidPositionExceptionInterface
      */
-    public function findElement(
-        string $locatorType,
-        string $locator,
-        int $ordinalPosition
-    ): WebDriverElement {
-        $collection = $locatorType === self::LOCATOR_CSS_SELECTOR
+    public function findElement(ElementLocator $elementIdentifier): WebDriverElement
+    {
+        $locator = $elementIdentifier->getLocator();
+
+        $collection = $elementIdentifier->getLocatorType() === LocatorType::CSS_SELECTOR
             ? $this->crawler->filter($locator)
             : $this->crawler->filterXPath($locator);
 
         $collectionCount = count($collection);
 
         try {
-            $crawlerPosition = $this->collectionPositionFinder->find($ordinalPosition, $collectionCount);
+            $crawlerPosition = $this->collectionPositionFinder->find(
+                $elementIdentifier->getOrdinalPosition(),
+                $collectionCount
+            );
 
             return $collection->getElement($crawlerPosition);
         } catch (InvalidPositionExceptionInterface $invalidPositionException) {
-            $invalidPositionException->setLocator($locator);
+            $invalidPositionException->setElementLocator($elementIdentifier);
 
             throw $invalidPositionException;
         }

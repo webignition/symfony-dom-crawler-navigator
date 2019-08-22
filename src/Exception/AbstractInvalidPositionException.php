@@ -2,11 +2,17 @@
 
 namespace webignition\SymfonyDomCrawlerNavigator\Exception;
 
+use webignition\SymfonyDomCrawlerNavigator\Model\ElementLocator;
+
 abstract class AbstractInvalidPositionException extends \Exception implements InvalidPositionExceptionInterface
 {
     private $ordinalPosition;
     private $collectionCount;
-    private $locator = '';
+
+    /**
+     * @var ElementLocator|null
+     */
+    private $elementLocator = null;
 
     public function __construct(int $ordinalPosition, int $collectionCount, string $message)
     {
@@ -16,9 +22,9 @@ abstract class AbstractInvalidPositionException extends \Exception implements In
         parent::__construct($message);
     }
 
-    public function setLocator(string $locator)
+    public function setElementLocator(ElementLocator $elementLocator)
     {
-        $this->locator = $locator;
+        $this->elementLocator = $elementLocator;
     }
 
     public function getOrdinalPosition(): int
@@ -31,8 +37,8 @@ abstract class AbstractInvalidPositionException extends \Exception implements In
         return $this->collectionCount;
     }
 
-    public function getLocator(): string
+    public function getElementLocator(): ?ElementLocator
     {
-        return $this->locator;
+        return $this->elementLocator;
     }
 }
