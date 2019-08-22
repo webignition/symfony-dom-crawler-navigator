@@ -27,6 +27,11 @@ class Navigator
         );
     }
 
+    public function setCrawler(Crawler $crawler)
+    {
+        $this->crawler = $crawler;
+    }
+
     /**
      * @param ElementLocator $elementLocator
      * @param ElementLocator|null $scope
