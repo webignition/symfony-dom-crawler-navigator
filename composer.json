@@ -33,7 +33,8 @@
     },
     "require": {
         "php": ">=7.2",
-        "symfony/panther": "^0.5"
+        "symfony/panther": "^0.5",
+        "webignition/web-driver-element-collection": ">=0.2,<1"
     },
     "require-dev": {
         "phpunit/phpunit": "~8.0",

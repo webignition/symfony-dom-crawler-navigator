@@ -11,6 +11,8 @@ use webignition\SymfonyDomCrawlerNavigator\Model\LocatorType;
 
 class CrawlerFactory
 {
+    const DEFAULT_ORDINAL_POSITION = 1;
+
     private $collectionPositionFinder;
 
     public function __construct(CollectionPositionFinder $collectionPositionFinder)
@@ -36,27 +38,61 @@ class CrawlerFactory
      */
     public function createElementCrawler(ElementLocator $elementLocator, Crawler $crawler): Crawler
     {
-        $locator = $elementLocator->getLocator();
+        $collection = $this->createFilteredCrawler($elementLocator, $crawler);
 
-        $collection = $elementLocator->getLocatorType() === LocatorType::CSS_SELECTOR
-            ? $crawler->filter($locator)
-            : $crawler->filterXPath($locator);
-
-        $collectionCount = count($collection);
-
-        if (0 === $collectionCount) {
-            throw new UnknownElementException($elementLocator);
+        $ordinalPosition = $elementLocator->getOrdinalPosition();
+        if (null === $ordinalPosition) {
+            return $collection;
         }
+
+        return $this->createSingleElementCrawler($elementLocator, $crawler);
+    }
+
+    /**
+     * @param ElementLocator $elementLocator
+     * @param Crawler $crawler
+     *
+     * @return Crawler
+     *
+     * @throws InvalidElementPositionException
+     * @throws UnknownElementException
+     */
+    public function createSingleElementCrawler(ElementLocator $elementLocator, Crawler $crawler): Crawler
+    {
+        $collection = $this->createFilteredCrawler($elementLocator, $crawler);
 
         try {
             $crawlerPosition = $this->collectionPositionFinder->find(
-                $elementLocator->getOrdinalPosition(),
-                $collectionCount
+                $elementLocator->getOrdinalPosition() ?? self::DEFAULT_ORDINAL_POSITION,
+                count($collection)
             );
 
             return $collection->eq($crawlerPosition);
         } catch (InvalidPositionExceptionInterface $invalidPositionException) {
             throw new InvalidElementPositionException($elementLocator, $invalidPositionException);
         }
+    }
+
+    /**
+     * @param ElementLocator $elementLocator
+     * @param Crawler $crawler
+     *
+     * @return Crawler
+     *
+     * @throws UnknownElementException
+     */
+    private function createFilteredCrawler(ElementLocator $elementLocator, Crawler $crawler): Crawler
+    {
+        $locator = $elementLocator->getLocator();
+
+        $collection = $elementLocator->getLocatorType() === LocatorType::CSS_SELECTOR
+            ? $crawler->filter($locator)
+            : $crawler->filterXPath($locator);
+
+        if (0 === count($collection)) {
+            throw new UnknownElementException($elementLocator);
+        }
+
+        return $collection;
     }
 }
