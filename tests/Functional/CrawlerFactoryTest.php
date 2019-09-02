@@ -46,10 +46,10 @@ class CrawlerFactoryTest extends AbstractTestCase
 
                     /* @var WebDriverElement $element */
                     foreach ($crawler as $index => $element) {
-                        $this->assertSame($expectedElementGetText[$index], $element->getText());
+                        if ($element instanceof WebDriverElement) {
+                            $this->assertSame($expectedElementGetText[$index], $element->getText());
+                        }
                     }
-
-                    $this->assertSame('Hello', $crawler->getText());
                 },
             ],
             'first h1 with css selector, position 1' => [
