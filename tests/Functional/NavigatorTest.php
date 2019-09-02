@@ -23,9 +23,9 @@ class NavigatorTest extends AbstractTestCase
     }
 
     /**
-     * @dataProvider findElementSuccessDataProvider
+     * @dataProvider findSuccessDataProvider
      */
-    public function testFindElementSuccess(
+    public function testFindSuccess(
         ElementLocator $elementIdentifier,
         ?ElementLocator $scope,
         callable $assertions
@@ -33,12 +33,12 @@ class NavigatorTest extends AbstractTestCase
         $crawler = self::$client->request('GET', '/basic.html');
         $navigator = Navigator::create($crawler);
 
-        $element = $navigator->findElement($elementIdentifier, $scope);
+        $element = $navigator->find($elementIdentifier, $scope);
 
         $assertions($element);
     }
 
-    public function findElementSuccessDataProvider(): array
+    public function findSuccessDataProvider(): array
     {
         return [
             'first h1 with css selector' => [
@@ -108,20 +108,20 @@ class NavigatorTest extends AbstractTestCase
     }
 
     /**
-     * @dataProvider hasElementSuccessDataProvider
+     * @dataProvider hasSuccessDataProvider
      */
-    public function testHasElement(
+    public function testHasSuccess(
         ElementLocator $elementIdentifier,
         ?ElementLocator $scope,
-        bool $expectedHasElement
+        bool $expectedHas
     ) {
         $crawler = self::$client->request('GET', '/basic.html');
         $navigator = Navigator::create($crawler);
 
-        $this->assertSame($expectedHasElement, $navigator->hasElement($elementIdentifier, $scope));
+        $this->assertSame($expectedHas, $navigator->has($elementIdentifier, $scope));
     }
 
-    public function hasElementSuccessDataProvider(): array
+    public function hasSuccessDataProvider(): array
     {
         return [
             'existent element without scope' => [
@@ -131,7 +131,7 @@ class NavigatorTest extends AbstractTestCase
                     1
                 ),
                 'scopeLocator' => null,
-                'expectedHasElement' => true,
+                'expectedHas' => true,
             ],
             'existent element inside scope' => [
                 'elementIdentifier' => new ElementLocator(
@@ -144,7 +144,7 @@ class NavigatorTest extends AbstractTestCase
                     'form[action="/action2"]',
                     1
                 ),
-                'expectedHasElement' => true,
+                'expectedHas' => true,
             ],
             'existent scope contains non-existent element' => [
                 'elementLocator' => new ElementLocator(
@@ -157,7 +157,7 @@ class NavigatorTest extends AbstractTestCase
                     'main',
                     1
                 ),
-                'expectedHasElement' => false,
+                'expectedHas' => false,
             ],
             'non-existent scope' => [
                 'elementLocator' => new ElementLocator(
@@ -170,7 +170,7 @@ class NavigatorTest extends AbstractTestCase
                     '.does-not-exist',
                     1
                 ),
-                'expectedHasElement' => false,
+                'expectedHas' => false,
             ],
         ];
     }
@@ -178,7 +178,7 @@ class NavigatorTest extends AbstractTestCase
     /**
      * @dataProvider findThrowsUnknownElementExceptionDataProvider
      */
-    public function testFindElementThrowsUnknownElementException(
+    public function testFindThrowsUnknownElementException(
         ElementLocator $elementLocator,
         ?ElementLocator $scopeLocator,
         ElementLocator $expectedExceptionElementLocator,
@@ -188,7 +188,7 @@ class NavigatorTest extends AbstractTestCase
         $navigator = Navigator::create($crawler);
 
         try {
-            $navigator->findElement($elementLocator, $scopeLocator);
+            $navigator->find($elementLocator, $scopeLocator);
             $this->fail('UnknownElementException not thrown');
         } catch (UnknownElementException $unknownElementException) {
             $this->assertEquals($expectedExceptionElementLocator, $unknownElementException->getElementLocator());
@@ -261,9 +261,9 @@ class NavigatorTest extends AbstractTestCase
     }
 
     /**
-     * @dataProvider findElementThrowsInvalidPositionExceptionDataProvider
+     * @dataProvider findThrowsInvalidPositionExceptionDataProvider
      */
-    public function testFindElementThrowsInvalidPositionException(string $cssLocator, int $ordinalPosition)
+    public function testFindThrowsInvalidPositionException(string $cssLocator, int $ordinalPosition)
     {
         $crawler = self::$client->request('GET', '/basic.html');
         $navigator = Navigator::create($crawler);
@@ -275,7 +275,7 @@ class NavigatorTest extends AbstractTestCase
         );
 
         try {
-            $navigator->findElement($elementLocator);
+            $navigator->find($elementLocator);
             $this->fail('InvalidPositionExceptionInterface instance not thrown');
         } catch (InvalidElementPositionException $invalidElementPositionException) {
             $this->assertSame($elementLocator, $invalidElementPositionException->getElementLocator());
@@ -289,7 +289,7 @@ class NavigatorTest extends AbstractTestCase
         }
     }
 
-    public function findElementThrowsInvalidPositionExceptionDataProvider(): array
+    public function findThrowsInvalidPositionExceptionDataProvider(): array
     {
         return [
             'ordinalPosition zero, collection count non-zero' => [

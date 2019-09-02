@@ -13,7 +13,7 @@ use webignition\SymfonyDomCrawlerNavigator\Navigator;
 
 class NavigatorTest extends \PHPUnit\Framework\TestCase
 {
-    public function testFindElementThrowsUnknownElementException()
+    public function testFindThrowsUnknownElementException()
     {
         $crawler = new Crawler([], \Mockery::mock(WebDriver::class));
         $elementCrawler = new Crawler([], \Mockery::mock(WebDriver::class));
@@ -32,7 +32,7 @@ class NavigatorTest extends \PHPUnit\Framework\TestCase
         );
 
         try {
-            $navigator->findElement($elementLocator);
+            $navigator->find($elementLocator);
             $this->fail('UnknownElementException not thrown');
         } catch (UnknownElementException $unknownElementException) {
             $this->assertSame($elementLocator, $unknownElementException->getElementLocator());

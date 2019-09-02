@@ -84,7 +84,7 @@ class CrawlerFactoryTest extends AbstractTestCase
     }
 
     /**
-     * @dataProvider findElementThrowsInvalidPositionExceptionDataProvider
+     * @dataProvider createElementCrawlerThrowsInvalidElementPositionDataProvider
      */
     public function testCreateElementCrawlerThrowsInvalidElementPositionException(
         string $cssLocator,
@@ -114,7 +114,7 @@ class CrawlerFactoryTest extends AbstractTestCase
         }
     }
 
-    public function findElementThrowsInvalidPositionExceptionDataProvider(): array
+    public function createElementCrawlerThrowsInvalidElementPositionDataProvider(): array
     {
         return [
             'ordinalPosition zero, collection count non-zero' => [

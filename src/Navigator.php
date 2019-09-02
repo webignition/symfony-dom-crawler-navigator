@@ -41,10 +41,10 @@ class Navigator
      * @throws InvalidElementPositionException
      * @throws UnknownElementException
      */
-    public function findElement(ElementLocator $elementLocator, ?ElementLocator $scopeLocator = null): WebDriverElement
+    public function find(ElementLocator $elementLocator, ?ElementLocator $scopeLocator = null): WebDriverElement
     {
         try {
-            $element = $this->doFindElement($elementLocator, $scopeLocator);
+            $element = $this->doFind($elementLocator, $scopeLocator);
 
             if ($element instanceof WebDriverElement) {
                 return $element;
@@ -66,10 +66,10 @@ class Navigator
      *
      * @return bool
      */
-    public function hasElement(ElementLocator $elementLocator, ?ElementLocator $scopeLocator = null): bool
+    public function has(ElementLocator $elementLocator, ?ElementLocator $scopeLocator = null): bool
     {
         try {
-            return $this->doFindElement($elementLocator, $scopeLocator) instanceof WebDriverElement;
+            return $this->doFind($elementLocator, $scopeLocator) instanceof WebDriverElement;
         } catch (UnknownElementException | InvalidElementPositionException $exception) {
             return false;
         }
@@ -84,7 +84,7 @@ class Navigator
      * @throws InvalidElementPositionException
      * @throws UnknownElementException
      */
-    private function doFindElement(
+    private function doFind(
         ElementLocator $elementLocator,
         ?ElementLocator $scopeLocator = null
     ): ?WebDriverElement {
