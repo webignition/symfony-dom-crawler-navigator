@@ -10,6 +10,7 @@ use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidPositionExceptionInt
 use webignition\SymfonyDomCrawlerNavigator\Exception\UnknownElementException;
 use webignition\SymfonyDomCrawlerNavigator\Model\ElementLocator;
 use webignition\SymfonyDomCrawlerNavigator\Model\LocatorType;
+use webignition\SymfonyDomCrawlerNavigator\Model\WebDriverElementCollection;
 use webignition\SymfonyDomCrawlerNavigator\Navigator;
 
 class NavigatorTest extends AbstractTestCase
@@ -48,8 +49,15 @@ class NavigatorTest extends AbstractTestCase
                     1
                 ),
                 'scopeLocator' => null,
-                'assertions' => function (WebDriverElement $element) {
-                    $this->assertSame('Hello', $element->getText());
+                'assertions' => function (WebDriverElementCollection $collection) {
+                    $this->assertCount(1, $collection);
+
+                    $element = $collection->get(0);
+                    $this->assertInstanceOf(WebDriverElement::class, $element);
+
+                    if ($element instanceof WebDriverElement) {
+                        $this->assertSame('Hello', $element->getText());
+                    }
                 },
             ],
             'first h1 with xpath expression' => [
@@ -59,8 +67,15 @@ class NavigatorTest extends AbstractTestCase
                     1
                 ),
                 'scopeLocator' => null,
-                'assertions' => function (WebDriverElement $element) {
-                    $this->assertSame('Hello', $element->getText());
+                'assertions' => function (WebDriverElementCollection $collection) {
+                    $this->assertCount(1, $collection);
+
+                    $element = $collection->get(0);
+                    $this->assertInstanceOf(WebDriverElement::class, $element);
+
+                    if ($element instanceof WebDriverElement) {
+                        $this->assertSame('Hello', $element->getText());
+                    }
                 },
             ],
             'second h1 with css selector' => [
@@ -70,8 +85,15 @@ class NavigatorTest extends AbstractTestCase
                     2
                 ),
                 'scopeLocator' => null,
-                'assertions' => function (WebDriverElement $element) {
-                    $this->assertSame('Main', $element->getText());
+                'assertions' => function (WebDriverElementCollection $collection) {
+                    $this->assertCount(1, $collection);
+
+                    $element = $collection->get(0);
+                    $this->assertInstanceOf(WebDriverElement::class, $element);
+
+                    if ($element instanceof WebDriverElement) {
+                        $this->assertSame('Main', $element->getText());
+                    }
                 },
             ],
             'css-selector input scoped to css-selector second form' => [
@@ -85,8 +107,15 @@ class NavigatorTest extends AbstractTestCase
                     'form[action="/action2"]',
                     1
                 ),
-                'assertions' => function (WebDriverElement $element) {
-                    $this->assertSame('input-2', $element->getAttribute('name'));
+                'assertions' => function (WebDriverElementCollection $collection) {
+                    $this->assertCount(1, $collection);
+
+                    $element = $collection->get(0);
+                    $this->assertInstanceOf(WebDriverElement::class, $element);
+
+                    if ($element instanceof WebDriverElement) {
+                        $this->assertSame('input-2', $element->getAttribute('name'));
+                    }
                 },
             ],
             'css-selector input scoped to xpath-expression second form' => [
@@ -100,8 +129,15 @@ class NavigatorTest extends AbstractTestCase
                     '//form',
                     2
                 ),
-                'assertions' => function (WebDriverElement $element) {
-                    $this->assertSame('input-2', $element->getAttribute('name'));
+                'assertions' => function (WebDriverElementCollection $collection) {
+                    $this->assertCount(1, $collection);
+
+                    $element = $collection->get(0);
+                    $this->assertInstanceOf(WebDriverElement::class, $element);
+
+                    if ($element instanceof WebDriverElement) {
+                        $this->assertSame('input-2', $element->getAttribute('name'));
+                    }
                 },
             ],
         ];

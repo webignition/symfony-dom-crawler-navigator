@@ -7,6 +7,7 @@ use Symfony\Component\Panther\DomCrawler\Crawler;
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidElementPositionException;
 use webignition\SymfonyDomCrawlerNavigator\Exception\UnknownElementException;
 use webignition\SymfonyDomCrawlerNavigator\Model\ElementLocator;
+use webignition\SymfonyDomCrawlerNavigator\Model\WebDriverElementCollection;
 
 class Navigator
 {
@@ -36,19 +37,17 @@ class Navigator
      * @param ElementLocator $elementLocator
      * @param ElementLocator|null $scopeLocator
      *
-     * @return WebDriverElement
+     * @return WebDriverElementCollection
      *
      * @throws InvalidElementPositionException
      * @throws UnknownElementException
      */
-    public function find(ElementLocator $elementLocator, ?ElementLocator $scopeLocator = null): WebDriverElement
-    {
+    public function find(
+        ElementLocator $elementLocator,
+        ?ElementLocator $scopeLocator = null
+    ): WebDriverElementCollection {
         try {
-            $element = $this->doFind($elementLocator, $scopeLocator);
-
-            if ($element instanceof WebDriverElement) {
-                return $element;
-            }
+            return $this->doFind($elementLocator, $scopeLocator);
         } catch (UnknownElementException $unknownElementException) {
             if ($scopeLocator instanceof ElementLocator) {
                 $unknownElementException->setScopeLocator($scopeLocator);
@@ -56,8 +55,6 @@ class Navigator
 
             throw $unknownElementException;
         }
-
-        throw new UnknownElementException($elementLocator);
     }
 
     /**
@@ -69,7 +66,9 @@ class Navigator
     public function has(ElementLocator $elementLocator, ?ElementLocator $scopeLocator = null): bool
     {
         try {
-            return $this->doFind($elementLocator, $scopeLocator) instanceof WebDriverElement;
+            $collection = $this->doFind($elementLocator, $scopeLocator);
+
+            return count($collection) > 0;
         } catch (UnknownElementException | InvalidElementPositionException $exception) {
             return false;
         }
@@ -79,7 +78,7 @@ class Navigator
      * @param ElementLocator $elementLocator
      * @param ElementLocator $scopeLocator
      *
-     * @return WebDriverElement|null
+     * @return WebDriverElementCollection
      *
      * @throws InvalidElementPositionException
      * @throws UnknownElementException
@@ -87,13 +86,15 @@ class Navigator
     private function doFind(
         ElementLocator $elementLocator,
         ?ElementLocator $scopeLocator = null
-    ): ?WebDriverElement {
+    ): WebDriverElementCollection {
         $scopeCrawler = $scopeLocator instanceof ElementLocator
             ? $this->crawlerFactory->createElementCrawler($scopeLocator, $this->crawler)
             : $this->crawler;
 
         $elementCrawler = $this->crawlerFactory->createElementCrawler($elementLocator, $scopeCrawler);
 
-        return $elementCrawler->getElement(0);
+        return new WebDriverElementCollection([
+            $elementCrawler->getElement(0),
+        ]);
     }
 }

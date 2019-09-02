@@ -47,6 +47,8 @@ class CrawlerFactory
         $collectionCount = count($collection);
 
         if (0 === $collectionCount) {
+//            return $crawler;
+
             throw new UnknownElementException($elementLocator);
         }
 

@@ -23,6 +23,11 @@ class WebDriverElementCollection implements \Countable, \Iterator
         }
     }
 
+    public function get(int $index): ?WebDriverElement
+    {
+        return $this->elements[$index] ?? null;
+    }
+
     // Countable methods
 
     public function count(): int
