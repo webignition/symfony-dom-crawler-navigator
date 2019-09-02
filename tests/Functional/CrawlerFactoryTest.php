@@ -31,7 +31,16 @@ class CrawlerFactoryTest extends AbstractTestCase
     public function createElementCrawlerSuccessDataProvider(): array
     {
         return [
-            'first h1 with css selector' => [
+            'first h1 with css selector, position null' => [
+                'elementLocator' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    'h1'
+                ),
+                'assertions' => function (Crawler $crawler) {
+                    $this->assertSame('Hello', $crawler->getText());
+                },
+            ],
+            'first h1 with css selector, position 1' => [
                 'elementLocator' => new ElementLocator(
                     LocatorType::CSS_SELECTOR,
                     'h1',

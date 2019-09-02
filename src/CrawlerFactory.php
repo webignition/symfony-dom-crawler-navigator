@@ -11,6 +11,8 @@ use webignition\SymfonyDomCrawlerNavigator\Model\LocatorType;
 
 class CrawlerFactory
 {
+    const DEFAULT_ORDINAL_POSITION = 1;
+
     private $collectionPositionFinder;
 
     public function __construct(CollectionPositionFinder $collectionPositionFinder)
@@ -50,7 +52,7 @@ class CrawlerFactory
 
         try {
             $crawlerPosition = $this->collectionPositionFinder->find(
-                $elementLocator->getOrdinalPosition(),
+                $elementLocator->getOrdinalPosition() ?? self::DEFAULT_ORDINAL_POSITION,
                 $collectionCount
             );
 

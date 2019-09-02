@@ -8,7 +8,7 @@ class ElementLocator
     private $locator;
     private $ordinalPosition;
 
-    public function __construct(string $locatorType, string $locator, int $ordinalPosition)
+    public function __construct(string $locatorType, string $locator, ?int $ordinalPosition = null)
     {
         $this->locatorType = $locatorType;
         $this->locator = $locator;
@@ -25,7 +25,7 @@ class ElementLocator
         return $this->locator;
     }
 
-    public function getOrdinalPosition(): int
+    public function getOrdinalPosition(): ?int
     {
         return $this->ordinalPosition;
     }
