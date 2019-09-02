@@ -4,6 +4,7 @@
 
 namespace webignition\SymfonyDomCrawlerNavigator\Tests\Functional;
 
+use Facebook\WebDriver\WebDriverElement;
 use Symfony\Component\Panther\DomCrawler\Crawler;
 use webignition\SymfonyDomCrawlerNavigator\CrawlerFactory;
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidElementPositionException;
@@ -23,12 +24,85 @@ class CrawlerFactoryTest extends AbstractTestCase
         $crawlerFactory = CrawlerFactory::create();
 
         $elementCrawler = $crawlerFactory->createElementCrawler($elementLocator, $crawler);
-        $this->assertCount(1, $elementCrawler);
 
         $assertions($elementCrawler);
     }
 
     public function createElementCrawlerSuccessDataProvider(): array
+    {
+        return [
+            'first h1 with css selector, position null' => [
+                'elementLocator' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    'h1'
+                ),
+                'assertions' => function (Crawler $crawler) {
+                    $this->assertCount(2, $crawler);
+
+                    $expectedElementGetText = [
+                        'Hello',
+                        'Main',
+                    ];
+
+                    /* @var WebDriverElement $element */
+                    foreach ($crawler as $index => $element) {
+                        $this->assertSame($expectedElementGetText[$index], $element->getText());
+                    }
+
+                    $this->assertSame('Hello', $crawler->getText());
+                },
+            ],
+            'first h1 with css selector, position 1' => [
+                'elementLocator' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    'h1',
+                    1
+                ),
+                'assertions' => function (Crawler $crawler) {
+                    $this->assertCount(1, $crawler);
+                    $this->assertSame('Hello', $crawler->getText());
+                },
+            ],
+            'first h1 with xpath expression' => [
+                'elementLocator' => new ElementLocator(
+                    LocatorType::XPATH_EXPRESSION,
+                    '//h1',
+                    1
+                ),
+                'assertions' => function (Crawler $crawler) {
+                    $this->assertCount(1, $crawler);
+                    $this->assertSame('Hello', $crawler->getText());
+                },
+            ],
+            'second h1 with css selector' => [
+                'elementLocator' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    'h1',
+                    2
+                ),
+                'assertions' => function (Crawler $crawler) {
+                    $this->assertCount(1, $crawler);
+                    $this->assertSame('Main', $crawler->getText());
+                },
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider createSingleElementCrawlerSuccessDataProvider
+     */
+    public function testCreateSingleElementCrawlerSuccess(ElementLocator $elementLocator, callable $assertions)
+    {
+        $crawler = self::$client->request('GET', '/basic.html');
+        $crawlerFactory = CrawlerFactory::create();
+
+        $elementCrawler = $crawlerFactory->createSingleElementCrawler($elementLocator, $crawler);
+        $this->assertCount(1, $elementCrawler);
+
+        $assertions($elementCrawler);
+    }
+
+    public function createSingleElementCrawlerSuccessDataProvider(): array
     {
         return [
             'first h1 with css selector, position null' => [
@@ -48,26 +122,6 @@ class CrawlerFactoryTest extends AbstractTestCase
                 ),
                 'assertions' => function (Crawler $crawler) {
                     $this->assertSame('Hello', $crawler->getText());
-                },
-            ],
-            'first h1 with xpath expression' => [
-                'elementLocator' => new ElementLocator(
-                    LocatorType::XPATH_EXPRESSION,
-                    '//h1',
-                    1
-                ),
-                'assertions' => function (Crawler $crawler) {
-                    $this->assertSame('Hello', $crawler->getText());
-                },
-            ],
-            'second h1 with css selector' => [
-                'elementLocator' => new ElementLocator(
-                    LocatorType::CSS_SELECTOR,
-                    'h1',
-                    2
-                ),
-                'assertions' => function (Crawler $crawler) {
-                    $this->assertSame('Main', $crawler->getText());
                 },
             ],
         ];

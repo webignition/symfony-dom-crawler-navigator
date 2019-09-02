@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4e03ebee481538060eb6cb98c951f5aa",
+    "content-hash": "6526ee76a19b8cfaab2eb22becf97a1f",
     "packages": [
         {
             "name": "facebook/webdriver",
@@ -698,6 +698,51 @@
             "description": "Symfony Process Component",
             "homepage": "https://symfony.com",
             "time": "2019-05-30T16:10:05+00:00"
+        },
+        {
+            "name": "webignition/web-driver-element-collection",
+            "version": "0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webignition/web-driver-element-collection.git",
+                "reference": "43a18ce17b64c4493660aa63bb211df078e27a70"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webignition/web-driver-element-collection/zipball/43a18ce17b64c4493660aa63bb211df078e27a70",
+                "reference": "43a18ce17b64c4493660aa63bb211df078e27a70",
+                "shasum": ""
+            },
+            "require": {
+                "facebook/webdriver": "^1.7.1",
+                "php": ">=7.2"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.2",
+                "phpstan/phpstan": "^0.11.15",
+                "phpstan/phpstan-mockery": "^0.11.3",
+                "phpunit/phpunit": "~8.0",
+                "squizlabs/php_codesniffer": "3.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "webignition\\WebDriverElementCollection\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jon Cram",
+                    "email": "webignition@gmail.com"
+                }
+            ],
+            "description": "A collection of Facebook\\WebDriver\\WebDriverElement",
+            "homepage": "https://github.com/webignition/web-driver-element-collection",
+            "time": "2019-09-02T14:31:41+00:00"
         }
     ],
     "packages-dev": [

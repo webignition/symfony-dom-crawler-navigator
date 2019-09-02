@@ -2,12 +2,12 @@
 
 namespace webignition\SymfonyDomCrawlerNavigator;
 
-use Facebook\WebDriver\WebDriverElement;
 use Symfony\Component\Panther\DomCrawler\Crawler;
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidElementPositionException;
 use webignition\SymfonyDomCrawlerNavigator\Exception\UnknownElementException;
 use webignition\SymfonyDomCrawlerNavigator\Model\ElementLocator;
-use webignition\SymfonyDomCrawlerNavigator\Model\WebDriverElementCollection;
+use webignition\WebDriverElementCollection\WebDriverElementCollection;
+use webignition\WebDriverElementCollection\WebDriverElementCollectionInterface;
 
 class Navigator
 {
@@ -37,7 +37,7 @@ class Navigator
      * @param ElementLocator $elementLocator
      * @param ElementLocator|null $scopeLocator
      *
-     * @return WebDriverElementCollection
+     * @return WebDriverElementCollectionInterface
      *
      * @throws InvalidElementPositionException
      * @throws UnknownElementException
@@ -45,7 +45,7 @@ class Navigator
     public function find(
         ElementLocator $elementLocator,
         ?ElementLocator $scopeLocator = null
-    ): WebDriverElementCollection {
+    ): WebDriverElementCollectionInterface {
         try {
             return $this->doFind($elementLocator, $scopeLocator);
         } catch (UnknownElementException $unknownElementException) {
@@ -78,7 +78,7 @@ class Navigator
      * @param ElementLocator $elementLocator
      * @param ElementLocator $scopeLocator
      *
-     * @return WebDriverElementCollection
+     * @return WebDriverElementCollectionInterface
      *
      * @throws InvalidElementPositionException
      * @throws UnknownElementException
@@ -86,15 +86,19 @@ class Navigator
     private function doFind(
         ElementLocator $elementLocator,
         ?ElementLocator $scopeLocator = null
-    ): WebDriverElementCollection {
+    ): WebDriverElementCollectionInterface {
         $scopeCrawler = $scopeLocator instanceof ElementLocator
-            ? $this->crawlerFactory->createElementCrawler($scopeLocator, $this->crawler)
+            ? $this->crawlerFactory->createSingleElementCrawler($scopeLocator, $this->crawler)
             : $this->crawler;
 
         $elementCrawler = $this->crawlerFactory->createElementCrawler($elementLocator, $scopeCrawler);
 
-        return new WebDriverElementCollection([
-            $elementCrawler->getElement(0),
-        ]);
+        $elements = [];
+
+        foreach ($elementCrawler as $remoteWebElement) {
+            $elements[] = $remoteWebElement;
+        }
+
+        return new WebDriverElementCollection($elements);
     }
 }

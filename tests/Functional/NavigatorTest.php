@@ -10,8 +10,8 @@ use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidPositionExceptionInt
 use webignition\SymfonyDomCrawlerNavigator\Exception\UnknownElementException;
 use webignition\SymfonyDomCrawlerNavigator\Model\ElementLocator;
 use webignition\SymfonyDomCrawlerNavigator\Model\LocatorType;
-use webignition\SymfonyDomCrawlerNavigator\Model\WebDriverElementCollection;
 use webignition\SymfonyDomCrawlerNavigator\Navigator;
+use webignition\WebDriverElementCollection\WebDriverElementCollection;
 
 class NavigatorTest extends AbstractTestCase
 {
@@ -137,6 +137,20 @@ class NavigatorTest extends AbstractTestCase
 
                     if ($element instanceof WebDriverElement) {
                         $this->assertSame('input-2', $element->getAttribute('name'));
+                    }
+                },
+            ],
+            'radio group' => [
+                'elementIdentifier' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    '[name="radio-group-name"]'
+                ),
+                'scopeLocator' => null,
+                'assertions' => function (WebDriverElementCollection $collection) {
+                    $this->assertCount(3, $collection);
+
+                    foreach ($collection as $elementIndex => $element) {
+                        $this->assertSame((string) ($elementIndex + 1), $element->getAttribute('value'));
                     }
                 },
             ],
