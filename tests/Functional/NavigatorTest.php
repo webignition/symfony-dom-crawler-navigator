@@ -7,6 +7,7 @@ namespace webignition\SymfonyDomCrawlerNavigator\Tests\Functional;
 use Facebook\WebDriver\WebDriverElement;
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidElementPositionException;
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidPositionExceptionInterface;
+use webignition\SymfonyDomCrawlerNavigator\Exception\OverlyBroadLocatorException;
 use webignition\SymfonyDomCrawlerNavigator\Exception\UnknownElementException;
 use webignition\SymfonyDomCrawlerNavigator\Model\ElementLocator;
 use webignition\SymfonyDomCrawlerNavigator\Model\LocatorType;
@@ -158,6 +159,91 @@ class NavigatorTest extends AbstractTestCase
     }
 
     /**
+     * @dataProvider findOneSuccessDataProvider
+     */
+    public function testFindOneSuccess(
+        ElementLocator $elementIdentifier,
+        ?ElementLocator $scope,
+        callable $assertions
+    ) {
+        $crawler = self::$client->request('GET', '/basic.html');
+        $navigator = Navigator::create($crawler);
+
+        $element = $navigator->findOne($elementIdentifier, $scope);
+
+        $assertions($element);
+    }
+
+    public function findOneSuccessDataProvider(): array
+    {
+        return [
+            'first h1 with css selector' => [
+                'elementIdentifier' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    'h1',
+                    1
+                ),
+                'scopeLocator' => null,
+                'assertions' => function (WebDriverElement $element) {
+                    $this->assertSame('Hello', $element->getText());
+                },
+            ],
+            'first h1 with xpath expression' => [
+                'elementIdentifier' => new ElementLocator(
+                    LocatorType::XPATH_EXPRESSION,
+                    '//h1',
+                    1
+                ),
+                'scopeLocator' => null,
+                'assertions' => function (WebDriverElement $element) {
+                    $this->assertSame('Hello', $element->getText());
+                },
+            ],
+            'second h1 with css selector' => [
+                'elementIdentifier' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    'h1',
+                    2
+                ),
+                'scopeLocator' => null,
+                'assertions' => function (WebDriverElement $element) {
+                    $this->assertSame('Main', $element->getText());
+                },
+            ],
+            'css-selector input scoped to css-selector second form' => [
+                'elementIdentifier' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    'input',
+                    1
+                ),
+                'scopeLocator' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    'form[action="/action2"]',
+                    1
+                ),
+                'assertions' => function (WebDriverElement $element) {
+                    $this->assertSame('input-2', $element->getAttribute('name'));
+                },
+            ],
+            'css-selector input scoped to xpath-expression second form' => [
+                'elementIdentifier' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    'input',
+                    1
+                ),
+                'scopeLocator' => new ElementLocator(
+                    LocatorType::XPATH_EXPRESSION,
+                    '//form',
+                    2
+                ),
+                'assertions' => function (WebDriverElement $element) {
+                    $this->assertSame('input-2', $element->getAttribute('name'));
+                },
+            ],
+        ];
+    }
+
+    /**
      * @dataProvider hasSuccessDataProvider
      */
     public function testHasSuccess(
@@ -172,6 +258,83 @@ class NavigatorTest extends AbstractTestCase
     }
 
     public function hasSuccessDataProvider(): array
+    {
+        return [
+            'existent element without scope' => [
+                'elementIdentifier' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    'h1',
+                    1
+                ),
+                'scopeLocator' => null,
+                'expectedHas' => true,
+            ],
+            'existent collection without scope' => [
+                'elementIdentifier' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    '[name="radio-group-name"]',
+                    1
+                ),
+                'scopeLocator' => null,
+                'expectedHas' => true,
+            ],
+            'existent element inside scope' => [
+                'elementIdentifier' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    'input',
+                    1
+                ),
+                'scopeLocator' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    'form[action="/action2"]',
+                    1
+                ),
+                'expectedHas' => true,
+            ],
+            'existent scope contains non-existent element' => [
+                'elementLocator' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    '.does-not-exist',
+                    1
+                ),
+                'scopeLocator' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    'main',
+                    1
+                ),
+                'expectedHas' => false,
+            ],
+            'non-existent scope' => [
+                'elementLocator' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    'input',
+                    1
+                ),
+                'scopeLocator' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    '.does-not-exist',
+                    1
+                ),
+                'expectedHas' => false,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider hasOneSuccessDataProvider
+     */
+    public function testHasOneSuccess(
+        ElementLocator $elementIdentifier,
+        ?ElementLocator $scope,
+        bool $expectedHas
+    ) {
+        $crawler = self::$client->request('GET', '/basic.html');
+        $navigator = Navigator::create($crawler);
+
+        $this->assertSame($expectedHas, $navigator->hasOne($elementIdentifier, $scope));
+    }
+
+    public function hasOneSuccessDataProvider(): array
     {
         return [
             'existent element without scope' => [
@@ -353,6 +516,39 @@ class NavigatorTest extends AbstractTestCase
             'ordinalPosition less than negative collection count' => [
                 'cssLocator' => 'h1',
                 'ordinalPosition' => -3,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider findOneThrowsOverlyBroadLocatorExceptionDataProvider
+     */
+    public function testFindOneThrowsOverlyBroadLocatorException(
+        ElementLocator $elementLocator,
+        ?ElementLocator $scopeLocator,
+        int $expectedCollectionCount
+    ) {
+        $crawler = self::$client->request('GET', '/basic.html');
+        $navigator = Navigator::create($crawler);
+
+        try {
+            $navigator->findOne($elementLocator, $scopeLocator);
+            $this->fail('OverlyBroadLocatorException not thrown');
+        } catch (OverlyBroadLocatorException $overlyBroadLocatorException) {
+            $this->assertCount($expectedCollectionCount, $overlyBroadLocatorException->getCollection());
+        }
+    }
+
+    public function findOneThrowsOverlyBroadLocatorExceptionDataProvider(): array
+    {
+        return [
+            'collection locator overly broad, no scope' => [
+                'elementLocator' => new ElementLocator(
+                    LocatorType::CSS_SELECTOR,
+                    'h1'
+                ),
+                'scopeLocator' => null,
+                'expectedCollectionCount' => 2,
             ],
         ];
     }
