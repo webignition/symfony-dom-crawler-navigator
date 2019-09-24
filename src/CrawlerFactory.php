@@ -7,7 +7,6 @@ use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidElementPositionExcep
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidPositionExceptionInterface;
 use webignition\SymfonyDomCrawlerNavigator\Exception\UnknownElementException;
 use webignition\SymfonyDomCrawlerNavigator\Model\ElementLocator;
-use webignition\SymfonyDomCrawlerNavigator\Model\LocatorType;
 
 class CrawlerFactory
 {
@@ -85,7 +84,7 @@ class CrawlerFactory
     {
         $locator = $elementLocator->getLocator();
 
-        $collection = $elementLocator->getLocatorType() === LocatorType::CSS_SELECTOR
+        $collection = $elementLocator->isCssSelector()
             ? $crawler->filter($locator)
             : $crawler->filterXPath($locator);
 
