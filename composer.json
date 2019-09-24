@@ -34,7 +34,7 @@
     "require": {
         "php": ">=7.2",
         "symfony/panther": "^0.5",
-        "webignition/web-driver-element-collection": ">=0.2,<1",
+        "webignition/web-driver-element-collection": ">=0.5,<1",
         "facebook/webdriver": "^1.7.1"
     },
     "require-dev": {

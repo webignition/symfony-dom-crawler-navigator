@@ -8,6 +8,8 @@ use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidElementPositionExcep
 use webignition\SymfonyDomCrawlerNavigator\Exception\OverlyBroadLocatorException;
 use webignition\SymfonyDomCrawlerNavigator\Exception\UnknownElementException;
 use webignition\SymfonyDomCrawlerNavigator\Model\ElementLocator;
+use webignition\WebDriverElementCollection\RadioButtonCollection;
+use webignition\WebDriverElementCollection\SelectOptionCollection;
 use webignition\WebDriverElementCollection\WebDriverElementCollection;
 use webignition\WebDriverElementCollection\WebDriverElementCollectionInterface;
 
@@ -160,6 +162,14 @@ class Navigator
 
         foreach ($elementCrawler as $remoteWebElement) {
             $elements[] = $remoteWebElement;
+        }
+
+        if (RadioButtonCollection::is($elements)) {
+            return new RadioButtonCollection($elements);
+        }
+
+        if (SelectOptionCollection::is($elements)) {
+            return new SelectOptionCollection($elements);
         }
 
         return new WebDriverElementCollection($elements);
