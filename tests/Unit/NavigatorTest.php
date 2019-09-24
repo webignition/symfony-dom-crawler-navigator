@@ -10,7 +10,6 @@ use webignition\SymfonyDomCrawlerNavigator\Navigator;
 
 class NavigatorTest extends \PHPUnit\Framework\TestCase
 {
-
     public function testSetCrawler()
     {
         $crawler = new Crawler([], \Mockery::mock(WebDriver::class));
