@@ -11,7 +11,6 @@ use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidElementPositionExcep
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidPositionExceptionInterface;
 use webignition\SymfonyDomCrawlerNavigator\Exception\UnknownElementException;
 use webignition\SymfonyDomCrawlerNavigator\Model\ElementLocator;
-use webignition\SymfonyDomCrawlerNavigator\Model\LocatorType;
 
 class CrawlerFactoryTest extends AbstractTestCase
 {
@@ -32,10 +31,7 @@ class CrawlerFactoryTest extends AbstractTestCase
     {
         return [
             'first h1 with css selector, position null' => [
-                'elementLocator' => new ElementLocator(
-                    LocatorType::CSS_SELECTOR,
-                    'h1'
-                ),
+                'elementLocator' => new ElementLocator('h1'),
                 'assertions' => function (Crawler $crawler) {
                     $this->assertCount(2, $crawler);
 
@@ -53,33 +49,21 @@ class CrawlerFactoryTest extends AbstractTestCase
                 },
             ],
             'first h1 with css selector, position 1' => [
-                'elementLocator' => new ElementLocator(
-                    LocatorType::CSS_SELECTOR,
-                    'h1',
-                    1
-                ),
+                'elementLocator' => new ElementLocator('h1', 1),
                 'assertions' => function (Crawler $crawler) {
                     $this->assertCount(1, $crawler);
                     $this->assertSame('Hello', $crawler->getText());
                 },
             ],
             'first h1 with xpath expression' => [
-                'elementLocator' => new ElementLocator(
-                    LocatorType::XPATH_EXPRESSION,
-                    '//h1',
-                    1
-                ),
+                'elementLocator' => new ElementLocator('//h1', 1),
                 'assertions' => function (Crawler $crawler) {
                     $this->assertCount(1, $crawler);
                     $this->assertSame('Hello', $crawler->getText());
                 },
             ],
             'second h1 with css selector' => [
-                'elementLocator' => new ElementLocator(
-                    LocatorType::CSS_SELECTOR,
-                    'h1',
-                    2
-                ),
+                'elementLocator' => new ElementLocator('h1', 2),
                 'assertions' => function (Crawler $crawler) {
                     $this->assertCount(1, $crawler);
                     $this->assertSame('Main', $crawler->getText());
@@ -106,20 +90,13 @@ class CrawlerFactoryTest extends AbstractTestCase
     {
         return [
             'first h1 with css selector, position null' => [
-                'elementLocator' => new ElementLocator(
-                    LocatorType::CSS_SELECTOR,
-                    'h1'
-                ),
+                'elementLocator' => new ElementLocator('h1'),
                 'assertions' => function (Crawler $crawler) {
                     $this->assertSame('Hello', $crawler->getText());
                 },
             ],
             'first h1 with css selector, position 1' => [
-                'elementLocator' => new ElementLocator(
-                    LocatorType::CSS_SELECTOR,
-                    'h1',
-                    1
-                ),
+                'elementLocator' => new ElementLocator('h1', 1),
                 'assertions' => function (Crawler $crawler) {
                     $this->assertSame('Hello', $crawler->getText());
                 },
@@ -132,11 +109,7 @@ class CrawlerFactoryTest extends AbstractTestCase
         $crawler = self::$client->request('GET', '/basic.html');
         $crawlerFactory = CrawlerFactory::create();
 
-        $elementLocator = new ElementLocator(
-            LocatorType::CSS_SELECTOR,
-            '.does-not-exist',
-            1
-        );
+        $elementLocator = new ElementLocator('.does-not-exist', 1);
 
         try {
             $crawlerFactory->createElementCrawler($elementLocator, $crawler);
@@ -156,11 +129,7 @@ class CrawlerFactoryTest extends AbstractTestCase
         $crawler = self::$client->request('GET', '/basic.html');
         $crawlerFactory = CrawlerFactory::create();
 
-        $elementLocator = new ElementLocator(
-            LocatorType::CSS_SELECTOR,
-            $cssLocator,
-            $ordinalPosition
-        );
+        $elementLocator = new ElementLocator($cssLocator, $ordinalPosition);
 
         try {
             $crawlerFactory->createElementCrawler($elementLocator, $crawler);
