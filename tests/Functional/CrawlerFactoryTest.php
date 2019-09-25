@@ -6,18 +6,19 @@ namespace webignition\SymfonyDomCrawlerNavigator\Tests\Functional;
 
 use Facebook\WebDriver\WebDriverElement;
 use Symfony\Component\Panther\DomCrawler\Crawler;
+use webignition\DomElementLocator\ElementLocator;
+use webignition\DomElementLocator\ElementLocatorInterface;
 use webignition\SymfonyDomCrawlerNavigator\CrawlerFactory;
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidElementPositionException;
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidPositionExceptionInterface;
 use webignition\SymfonyDomCrawlerNavigator\Exception\UnknownElementException;
-use webignition\SymfonyDomCrawlerNavigator\Model\ElementLocator;
 
 class CrawlerFactoryTest extends AbstractTestCase
 {
     /**
      * @dataProvider createElementCrawlerSuccessDataProvider
      */
-    public function testCreateElementCrawlerSuccess(ElementLocator $elementLocator, callable $assertions)
+    public function testCreateElementCrawlerSuccess(ElementLocatorInterface $elementLocator, callable $assertions)
     {
         $crawler = self::$client->request('GET', '/basic.html');
         $crawlerFactory = CrawlerFactory::create();
@@ -75,7 +76,7 @@ class CrawlerFactoryTest extends AbstractTestCase
     /**
      * @dataProvider createSingleElementCrawlerSuccessDataProvider
      */
-    public function testCreateSingleElementCrawlerSuccess(ElementLocator $elementLocator, callable $assertions)
+    public function testCreateSingleElementCrawlerSuccess(ElementLocatorInterface $elementLocator, callable $assertions)
     {
         $crawler = self::$client->request('GET', '/basic.html');
         $crawlerFactory = CrawlerFactory::create();

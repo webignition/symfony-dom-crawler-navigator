@@ -2,12 +2,12 @@
 
 namespace webignition\SymfonyDomCrawlerNavigator\Exception;
 
-use webignition\SymfonyDomCrawlerNavigator\Model\ElementLocator;
+use webignition\DomElementLocator\ElementLocatorInterface;
 
 class InvalidElementPositionException extends AbstractElementException
 {
     public function __construct(
-        ElementLocator $elementLocator,
+        ElementLocatorInterface $elementLocator,
         InvalidPositionExceptionInterface $invalidPositionException
     ) {
         $message = sprintf(

@@ -2,7 +2,7 @@
 
 namespace webignition\SymfonyDomCrawlerNavigator\Exception;
 
-use webignition\SymfonyDomCrawlerNavigator\Model\ElementLocator;
+use webignition\DomElementLocator\ElementLocatorInterface;
 use webignition\WebDriverElementCollection\WebDriverElementCollectionInterface;
 
 class OverlyBroadLocatorException extends AbstractElementException
@@ -11,8 +11,8 @@ class OverlyBroadLocatorException extends AbstractElementException
     private $collection;
 
     public function __construct(
-        ElementLocator $elementLocator,
-        ?ElementLocator $scopeLocator,
+        ElementLocatorInterface $elementLocator,
+        ?ElementLocatorInterface $scopeLocator,
         WebDriverElementCollectionInterface $collection
     ) {
         parent::__construct($elementLocator, 'Overly broad locator "' . $elementLocator->getLocator() . '"');
@@ -20,7 +20,7 @@ class OverlyBroadLocatorException extends AbstractElementException
         $this->collection = $collection;
     }
 
-    public function getScopeLocator(): ?ElementLocator
+    public function getScopeLocator(): ?ElementLocatorInterface
     {
         return $this->scopeLocator;
     }
