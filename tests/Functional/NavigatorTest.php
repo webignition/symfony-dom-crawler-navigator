@@ -5,11 +5,12 @@
 namespace webignition\SymfonyDomCrawlerNavigator\Tests\Functional;
 
 use Facebook\WebDriver\WebDriverElement;
+use webignition\DomElementLocator\ElementLocator;
+use webignition\DomElementLocator\ElementLocatorInterface;
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidElementPositionException;
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidPositionExceptionInterface;
 use webignition\SymfonyDomCrawlerNavigator\Exception\OverlyBroadLocatorException;
 use webignition\SymfonyDomCrawlerNavigator\Exception\UnknownElementException;
-use webignition\SymfonyDomCrawlerNavigator\Model\ElementLocator;
 use webignition\SymfonyDomCrawlerNavigator\Navigator;
 use webignition\WebDriverElementCollection\RadioButtonCollection;
 use webignition\WebDriverElementCollection\SelectOptionCollection;
@@ -29,8 +30,8 @@ class NavigatorTest extends AbstractTestCase
      * @dataProvider findSuccessDataProvider
      */
     public function testFindSuccess(
-        ElementLocator $elementIdentifier,
-        ?ElementLocator $scope,
+        ElementLocatorInterface $elementIdentifier,
+        ?ElementLocatorInterface $scope,
         callable $assertions
     ) {
         $crawler = self::$client->request('GET', '/basic.html');
@@ -143,8 +144,8 @@ class NavigatorTest extends AbstractTestCase
      * @dataProvider findOneSuccessDataProvider
      */
     public function testFindOneSuccess(
-        ElementLocator $elementIdentifier,
-        ?ElementLocator $scope,
+        ElementLocatorInterface$elementIdentifier,
+        ?ElementLocatorInterface$scope,
         callable $assertions
     ) {
         $crawler = self::$client->request('GET', '/basic.html');
@@ -200,8 +201,8 @@ class NavigatorTest extends AbstractTestCase
      * @dataProvider hasSuccessDataProvider
      */
     public function testHasSuccess(
-        ElementLocator $elementIdentifier,
-        ?ElementLocator $scope,
+        ElementLocatorInterface$elementIdentifier,
+        ?ElementLocatorInterface$scope,
         bool $expectedHas
     ) {
         $crawler = self::$client->request('GET', '/basic.html');
@@ -245,8 +246,8 @@ class NavigatorTest extends AbstractTestCase
      * @dataProvider hasOneSuccessDataProvider
      */
     public function testHasOneSuccess(
-        ElementLocator $elementIdentifier,
-        ?ElementLocator $scope,
+        ElementLocatorInterface$elementIdentifier,
+        ?ElementLocatorInterface$scope,
         bool $expectedHas
     ) {
         $crawler = self::$client->request('GET', '/basic.html');
@@ -285,10 +286,10 @@ class NavigatorTest extends AbstractTestCase
      * @dataProvider findThrowsUnknownElementExceptionDataProvider
      */
     public function testFindThrowsUnknownElementException(
-        ElementLocator $elementLocator,
-        ?ElementLocator $scopeLocator,
-        ElementLocator $expectedExceptionElementLocator,
-        ?ElementLocator $expectedExceptionScopeLocator
+        ElementLocatorInterface$elementLocator,
+        ?ElementLocatorInterface$scopeLocator,
+        ElementLocatorInterface$expectedExceptionElementLocator,
+        ?ElementLocatorInterface$expectedExceptionScopeLocator
     ) {
         $crawler = self::$client->request('GET', '/basic.html');
         $navigator = Navigator::create($crawler);
@@ -373,8 +374,8 @@ class NavigatorTest extends AbstractTestCase
      * @dataProvider findOneThrowsOverlyBroadLocatorExceptionDataProvider
      */
     public function testFindOneThrowsOverlyBroadLocatorException(
-        ElementLocator $elementLocator,
-        ?ElementLocator $scopeLocator,
+        ElementLocatorInterface$elementLocator,
+        ?ElementLocatorInterface$scopeLocator,
         int $expectedCollectionCount
     ) {
         $crawler = self::$client->request('GET', '/basic.html');

@@ -4,10 +4,10 @@ namespace webignition\SymfonyDomCrawlerNavigator;
 
 use Facebook\WebDriver\WebDriverElement;
 use Symfony\Component\Panther\DomCrawler\Crawler;
+use webignition\DomElementLocator\ElementLocatorInterface;
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidElementPositionException;
 use webignition\SymfonyDomCrawlerNavigator\Exception\OverlyBroadLocatorException;
 use webignition\SymfonyDomCrawlerNavigator\Exception\UnknownElementException;
-use webignition\SymfonyDomCrawlerNavigator\Model\ElementLocator;
 use webignition\WebDriverElementCollection\RadioButtonCollection;
 use webignition\WebDriverElementCollection\SelectOptionCollection;
 use webignition\WebDriverElementCollection\WebDriverElementCollection;
@@ -38,8 +38,8 @@ class Navigator
     }
 
     /**
-     * @param ElementLocator $elementLocator
-     * @param ElementLocator|null $scopeLocator
+     * @param ElementLocatorInterface $elementLocator
+     * @param ElementLocatorInterface|null $scopeLocator
      *
      * @return WebDriverElementCollectionInterface
      *
@@ -47,13 +47,13 @@ class Navigator
      * @throws UnknownElementException
      */
     public function find(
-        ElementLocator $elementLocator,
-        ?ElementLocator $scopeLocator = null
+        ElementLocatorInterface $elementLocator,
+        ?ElementLocatorInterface $scopeLocator = null
     ): WebDriverElementCollectionInterface {
         try {
             return $this->doFind($elementLocator, $scopeLocator);
         } catch (UnknownElementException $unknownElementException) {
-            if ($scopeLocator instanceof ElementLocator) {
+            if ($scopeLocator instanceof ElementLocatorInterface) {
                 $unknownElementException->setScopeLocator($scopeLocator);
             }
 
@@ -62,8 +62,8 @@ class Navigator
     }
 
     /**
-     * @param ElementLocator $elementLocator
-     * @param ElementLocator|null $scopeLocator
+     * @param ElementLocatorInterface $elementLocator
+     * @param ElementLocatorInterface|null $scopeLocator
      *
      * @return WebDriverElement
      *
@@ -72,8 +72,8 @@ class Navigator
      * @throws OverlyBroadLocatorException
      */
     public function findOne(
-        ElementLocator $elementLocator,
-        ?ElementLocator $scopeLocator = null
+        ElementLocatorInterface $elementLocator,
+        ?ElementLocatorInterface $scopeLocator = null
     ): WebDriverElement {
         $collection = $this->find($elementLocator, $scopeLocator);
 
@@ -89,12 +89,12 @@ class Navigator
     }
 
     /**
-     * @param ElementLocator $elementLocator
-     * @param ElementLocator|null $scopeLocator
+     * @param ElementLocatorInterface $elementLocator
+     * @param ElementLocatorInterface|null $scopeLocator
      *
      * @return bool
      */
-    public function has(ElementLocator $elementLocator, ?ElementLocator $scopeLocator = null): bool
+    public function has(ElementLocatorInterface $elementLocator, ?ElementLocatorInterface $scopeLocator = null): bool
     {
         $examiner = function (WebDriverElementCollectionInterface $collection) {
             return count($collection) > 0;
@@ -104,12 +104,12 @@ class Navigator
     }
 
     /**
-     * @param ElementLocator $elementLocator
-     * @param ElementLocator|null $scopeLocator
+     * @param ElementLocatorInterface $elementLocator
+     * @param ElementLocatorInterface|null $scopeLocator
      *
      * @return bool
      */
-    public function hasOne(ElementLocator $elementLocator, ?ElementLocator $scopeLocator = null): bool
+    public function hasOne(ElementLocatorInterface $elementLocator, ?ElementLocatorInterface $scopeLocator = null): bool
     {
         $examiner = function (WebDriverElementCollectionInterface $collection) {
             return count($collection) === 1;
@@ -119,15 +119,15 @@ class Navigator
     }
 
     /**
-     * @param ElementLocator $elementLocator
-     * @param ElementLocator|null $scopeLocator
+     * @param ElementLocatorInterface $elementLocator
+     * @param ElementLocatorInterface|null $scopeLocator
      * @param callable $examiner
      *
      * @return bool
      */
     private function examineCollectionCount(
-        ElementLocator $elementLocator,
-        ?ElementLocator $scopeLocator,
+        ElementLocatorInterface $elementLocator,
+        ?ElementLocatorInterface $scopeLocator,
         callable $examiner
     ): bool {
         try {
@@ -140,8 +140,8 @@ class Navigator
     }
 
     /**
-     * @param ElementLocator $elementLocator
-     * @param ElementLocator $scopeLocator
+     * @param ElementLocatorInterface $elementLocator
+     * @param ElementLocatorInterface $scopeLocator
      *
      * @return WebDriverElementCollectionInterface
      *
@@ -149,10 +149,10 @@ class Navigator
      * @throws UnknownElementException
      */
     private function doFind(
-        ElementLocator $elementLocator,
-        ?ElementLocator $scopeLocator = null
+        ElementLocatorInterface $elementLocator,
+        ?ElementLocatorInterface $scopeLocator = null
     ): WebDriverElementCollectionInterface {
-        $scopeCrawler = $scopeLocator instanceof ElementLocator
+        $scopeCrawler = $scopeLocator instanceof ElementLocatorInterface
             ? $this->crawlerFactory->createSingleElementCrawler($scopeLocator, $this->crawler)
             : $this->crawler;
 

@@ -3,10 +3,10 @@
 namespace webignition\SymfonyDomCrawlerNavigator;
 
 use Symfony\Component\Panther\DomCrawler\Crawler;
+use webignition\DomElementLocator\ElementLocatorInterface;
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidElementPositionException;
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidPositionExceptionInterface;
 use webignition\SymfonyDomCrawlerNavigator\Exception\UnknownElementException;
-use webignition\SymfonyDomCrawlerNavigator\Model\ElementLocator;
 
 class CrawlerFactory
 {
@@ -27,7 +27,7 @@ class CrawlerFactory
     }
 
     /**
-     * @param ElementLocator $elementLocator
+     * @param ElementLocatorInterface $elementLocator
      * @param Crawler $crawler
      *
      * @return Crawler
@@ -35,7 +35,7 @@ class CrawlerFactory
      * @throws InvalidElementPositionException
      * @throws UnknownElementException
      */
-    public function createElementCrawler(ElementLocator $elementLocator, Crawler $crawler): Crawler
+    public function createElementCrawler(ElementLocatorInterface $elementLocator, Crawler $crawler): Crawler
     {
         $collection = $this->createFilteredCrawler($elementLocator, $crawler);
 
@@ -48,7 +48,7 @@ class CrawlerFactory
     }
 
     /**
-     * @param ElementLocator $elementLocator
+     * @param ElementLocatorInterface $elementLocator
      * @param Crawler $crawler
      *
      * @return Crawler
@@ -56,7 +56,7 @@ class CrawlerFactory
      * @throws InvalidElementPositionException
      * @throws UnknownElementException
      */
-    public function createSingleElementCrawler(ElementLocator $elementLocator, Crawler $crawler): Crawler
+    public function createSingleElementCrawler(ElementLocatorInterface $elementLocator, Crawler $crawler): Crawler
     {
         $collection = $this->createFilteredCrawler($elementLocator, $crawler);
 
@@ -73,14 +73,14 @@ class CrawlerFactory
     }
 
     /**
-     * @param ElementLocator $elementLocator
+     * @param ElementLocatorInterface $elementLocator
      * @param Crawler $crawler
      *
      * @return Crawler
      *
      * @throws UnknownElementException
      */
-    private function createFilteredCrawler(ElementLocator $elementLocator, Crawler $crawler): Crawler
+    private function createFilteredCrawler(ElementLocatorInterface $elementLocator, Crawler $crawler): Crawler
     {
         $locator = $elementLocator->getLocator();
 

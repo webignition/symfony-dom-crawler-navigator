@@ -5,7 +5,6 @@
 namespace webignition\SymfonyDomCrawlerNavigator\Tests\Unit\Exception;
 
 use webignition\SymfonyDomCrawlerNavigator\Exception\PositionCannotBeZeroException;
-use webignition\SymfonyDomCrawlerNavigator\Model\ElementLocator;
 
 class PositionCannotBeZeroExceptionTest extends \PHPUnit\Framework\TestCase
 {

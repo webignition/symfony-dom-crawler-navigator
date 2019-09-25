@@ -5,7 +5,6 @@
 namespace webignition\SymfonyDomCrawlerNavigator\Tests\Unit\Exception;
 
 use webignition\SymfonyDomCrawlerNavigator\Exception\PositionOutOfBoundsException;
-use webignition\SymfonyDomCrawlerNavigator\Model\ElementLocator;
 
 class PositionOutOfBoundsExceptionTest extends \PHPUnit\Framework\TestCase
 {

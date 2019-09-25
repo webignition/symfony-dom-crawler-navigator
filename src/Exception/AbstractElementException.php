@@ -2,14 +2,14 @@
 
 namespace webignition\SymfonyDomCrawlerNavigator\Exception;
 
-use webignition\SymfonyDomCrawlerNavigator\Model\ElementLocator;
+use webignition\DomElementLocator\ElementLocatorInterface;
 
 abstract class AbstractElementException extends \Exception
 {
     private $elementLocator;
 
     public function __construct(
-        ElementLocator $elementLocator,
+        ElementLocatorInterface $elementLocator,
         string $message = '',
         int $code = 0,
         \Throwable $previous = null
@@ -19,7 +19,7 @@ abstract class AbstractElementException extends \Exception
         $this->elementLocator = $elementLocator;
     }
 
-    public function getElementLocator(): ElementLocator
+    public function getElementLocator(): ElementLocatorInterface
     {
         return $this->elementLocator;
     }
