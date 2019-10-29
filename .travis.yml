@@ -7,9 +7,12 @@ addons:
 
 install:
   - composer install --prefer-dist
+  - composer require --dev symfony/framework-bundle
 
 script:
-  - composer ci
+  - composer cs
+  - composer static-analysis
+  - composer remove --dev symfony/framework-bundle
 
 cache:
   directories:
