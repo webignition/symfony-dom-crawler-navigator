@@ -3,8 +3,9 @@
 namespace webignition\SymfonyDomCrawlerNavigator\Tests\Functional;
 
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Panther\Client as PantherClient;
 use webignition\SymfonyDomCrawlerNavigator\Tests\Services\Options;
-use webignition\SymfonyDomCrawlerNavigator\Tests\Services\PantherClientContainer;
+use webignition\SymfonyDomCrawlerNavigator\Tests\Services\PantherClientFactory;
 use webignition\SymfonyDomCrawlerNavigator\Tests\Services\WebServerRunner;
 
 abstract class AbstractTestCase extends TestCase
@@ -23,9 +24,14 @@ abstract class AbstractTestCase extends TestCase
     private static $webServerRunner;
 
     /**
-     * @var PantherClientContainer
+     * @var PantherClientFactory
      */
-    protected static $pantherClientContainer;
+    private static $pantherClientFactory;
+
+    /**
+     * @var PantherClient
+     */
+    protected static $client;
 
     public static function setUpBeforeClass(): void
     {
@@ -36,7 +42,8 @@ abstract class AbstractTestCase extends TestCase
         self::$webServerRunner = new WebServerRunner(self::$webServerDir);
         self::$webServerRunner->start();
 
-        self::$pantherClientContainer = new PantherClientContainer(Options::getBaseUri());
+        self::$pantherClientFactory = new PantherClientFactory();
+        self::$client = self::$pantherClientFactory->create(Options::getBaseUri());
     }
 
     public static function tearDownAfterClass(): void
@@ -47,6 +54,6 @@ abstract class AbstractTestCase extends TestCase
     public static function stopWebServer()
     {
         self::$webServerRunner->stop();
-        self::$pantherClientContainer->destroy();
+        self::$pantherClientFactory->destroyClient(self::$client);
     }
 }

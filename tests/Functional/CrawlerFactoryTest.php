@@ -20,7 +20,7 @@ class CrawlerFactoryTest extends AbstractTestCase
      */
     public function testCreateElementCrawlerSuccess(ElementLocatorInterface $elementLocator, callable $assertions)
     {
-        $crawler = self::$pantherClientContainer->get()->request('GET', '/basic.html');
+        $crawler = self::$client->request('GET', '/basic.html');
 
         $crawlerFactory = CrawlerFactory::create();
 
@@ -79,7 +79,7 @@ class CrawlerFactoryTest extends AbstractTestCase
      */
     public function testCreateSingleElementCrawlerSuccess(ElementLocatorInterface $elementLocator, callable $assertions)
     {
-        $crawler = self::$pantherClientContainer->get()->request('GET', '/basic.html');
+        $crawler = self::$client->request('GET', '/basic.html');
         $crawlerFactory = CrawlerFactory::create();
 
         $elementCrawler = $crawlerFactory->createSingleElementCrawler($elementLocator, $crawler);
@@ -108,7 +108,7 @@ class CrawlerFactoryTest extends AbstractTestCase
 
     public function testCreateElementCrawlerThrowsUnknownElementException()
     {
-        $crawler = self::$pantherClientContainer->get()->request('GET', '/basic.html');
+        $crawler = self::$client->request('GET', '/basic.html');
         $crawlerFactory = CrawlerFactory::create();
 
         $elementLocator = new ElementLocator('.does-not-exist', 1);
@@ -128,7 +128,7 @@ class CrawlerFactoryTest extends AbstractTestCase
         string $cssLocator,
         int $ordinalPosition
     ) {
-        $crawler = self::$pantherClientContainer->get()->request('GET', '/basic.html');
+        $crawler = self::$client->request('GET', '/basic.html');
         $crawlerFactory = CrawlerFactory::create();
 
         $elementLocator = new ElementLocator($cssLocator, $ordinalPosition);

@@ -20,7 +20,7 @@ class NavigatorTest extends AbstractTestCase
 {
     public function testCreate()
     {
-        $crawler = self::$pantherClientContainer->get()->request('GET', '/index.html');
+        $crawler = self::$client->request('GET', '/index.html');
         $navigator = Navigator::create($crawler);
 
         $this->assertInstanceOf(Navigator::class, $navigator);
@@ -34,7 +34,7 @@ class NavigatorTest extends AbstractTestCase
         ?ElementLocatorInterface $scope,
         callable $assertions
     ) {
-        $crawler = self::$pantherClientContainer->get()->request('GET', '/basic.html');
+        $crawler = self::$client->request('GET', '/basic.html');
         $navigator = Navigator::create($crawler);
 
         $element = $navigator->find($elementIdentifier, $scope);
@@ -148,7 +148,7 @@ class NavigatorTest extends AbstractTestCase
         ?ElementLocatorInterface$scope,
         callable $assertions
     ) {
-        $crawler = self::$pantherClientContainer->get()->request('GET', '/basic.html');
+        $crawler = self::$client->request('GET', '/basic.html');
         $navigator = Navigator::create($crawler);
 
         $element = $navigator->findOne($elementIdentifier, $scope);
@@ -205,7 +205,7 @@ class NavigatorTest extends AbstractTestCase
         ?ElementLocatorInterface$scope,
         bool $expectedHas
     ) {
-        $crawler = self::$pantherClientContainer->get()->request('GET', '/basic.html');
+        $crawler = self::$client->request('GET', '/basic.html');
         $navigator = Navigator::create($crawler);
 
         $this->assertSame($expectedHas, $navigator->has($elementIdentifier, $scope));
@@ -250,7 +250,7 @@ class NavigatorTest extends AbstractTestCase
         ?ElementLocatorInterface$scope,
         bool $expectedHas
     ) {
-        $crawler = self::$pantherClientContainer->get()->request('GET', '/basic.html');
+        $crawler = self::$client->request('GET', '/basic.html');
         $navigator = Navigator::create($crawler);
 
         $this->assertSame($expectedHas, $navigator->hasOne($elementIdentifier, $scope));
@@ -291,7 +291,7 @@ class NavigatorTest extends AbstractTestCase
         ElementLocatorInterface$expectedExceptionElementLocator,
         ?ElementLocatorInterface$expectedExceptionScopeLocator
     ) {
-        $crawler = self::$pantherClientContainer->get()->request('GET', '/basic.html');
+        $crawler = self::$client->request('GET', '/basic.html');
         $navigator = Navigator::create($crawler);
 
         try {
@@ -332,7 +332,7 @@ class NavigatorTest extends AbstractTestCase
      */
     public function testFindThrowsInvalidPositionException(string $cssLocator, int $ordinalPosition)
     {
-        $crawler = self::$pantherClientContainer->get()->request('GET', '/basic.html');
+        $crawler = self::$client->request('GET', '/basic.html');
         $navigator = Navigator::create($crawler);
 
         $elementLocator = new ElementLocator($cssLocator, $ordinalPosition);
@@ -378,7 +378,7 @@ class NavigatorTest extends AbstractTestCase
         ?ElementLocatorInterface$scopeLocator,
         int $expectedCollectionCount
     ) {
-        $crawler = self::$pantherClientContainer->get()->request('GET', '/basic.html');
+        $crawler = self::$client->request('GET', '/basic.html');
         $navigator = Navigator::create($crawler);
 
         try {
