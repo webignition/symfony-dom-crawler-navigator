@@ -21,6 +21,7 @@ class CrawlerFactoryTest extends AbstractTestCase
     public function testCreateElementCrawlerSuccess(ElementLocatorInterface $elementLocator, callable $assertions)
     {
         $crawler = self::$client->request('GET', '/basic.html');
+
         $crawlerFactory = CrawlerFactory::create();
 
         $elementCrawler = $crawlerFactory->createElementCrawler($elementLocator, $crawler);
