@@ -5,6 +5,7 @@ namespace webignition\SymfonyDomCrawlerNavigator\Tests\Functional;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Panther\Client as PantherClient;
 use Symfony\Component\Panther\ProcessManager\WebServerManager;
+use webignition\SymfonyDomCrawlerNavigator\Tests\Services\PantherClientFactory;
 use webignition\SymfonyDomCrawlerNavigator\Tests\Services\WebServerRunner;
 
 abstract class AbstractTestCase extends TestCase
@@ -45,6 +46,11 @@ abstract class AbstractTestCase extends TestCase
      */
     private static $webServerRunner;
 
+    /**
+     * @var PantherClientFactory
+     */
+    private static $pantherClientFactory;
+
     public static function setUpBeforeClass(): void
     {
         self::$webServerDir = (string) realpath(
@@ -54,8 +60,10 @@ abstract class AbstractTestCase extends TestCase
         self::$webServerRunner = new WebServerRunner(self::$webServerDir);
         self::$webServerRunner->start();
 
-        self::startWebServer();
-        self::$client = PantherClient::createChromeClient(null, null, [], self::$baseUri);
+        self::$baseUri = sprintf('http://%s:%s', self::$defaultOptions['hostname'], self::$defaultOptions['port']);
+
+        self::$pantherClientFactory = new PantherClientFactory();
+        self::$client = self::$pantherClientFactory->create(self::$baseUri);
     }
 
     public static function tearDownAfterClass(): void
@@ -63,18 +71,9 @@ abstract class AbstractTestCase extends TestCase
         static::stopWebServer();
     }
 
-    public static function startWebServer(): void
-    {
-        self::$baseUri = sprintf('http://%s:%s', self::$defaultOptions['hostname'], self::$defaultOptions['port']);
-    }
-
     public static function stopWebServer()
     {
         self::$webServerRunner->stop();
-
-        if (null !== self::$client) {
-            self::$client->quit(false);
-            self::$client->getBrowserManager()->quit();
-        }
+        self::$pantherClientFactory->destroy(self::$client);
     }
 }

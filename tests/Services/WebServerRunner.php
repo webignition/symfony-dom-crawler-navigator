@@ -37,7 +37,7 @@ class WebServerRunner
         }
     }
 
-    public function stop()
+    public function stop(): void
     {
         if ($this->webServerManager instanceof WebServerManager) {
             $this->webServerManager->quit();
@@ -45,7 +45,7 @@ class WebServerRunner
         }
     }
 
-    private function createWebServerManager()
+    private function createWebServerManager(): WebServerManager
     {
         return new WebServerManager(
             $this->webServerDir,
