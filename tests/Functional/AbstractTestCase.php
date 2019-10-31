@@ -75,6 +75,7 @@ abstract class AbstractTestCase extends TestCase
     {
         if (null !== self::$webServerManager) {
             self::$webServerManager->quit();
+            self::$webServerManager = null;
         }
 
         if (null !== self::$client) {
