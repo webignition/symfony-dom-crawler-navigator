@@ -5,6 +5,7 @@ namespace webignition\SymfonyDomCrawlerNavigator\Tests\Functional;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Panther\Client as PantherClient;
 use Symfony\Component\Panther\ProcessManager\WebServerManager;
+use webignition\SymfonyDomCrawlerNavigator\Tests\Services\WebServerRunner;
 
 abstract class AbstractTestCase extends TestCase
 {
@@ -39,11 +40,19 @@ abstract class AbstractTestCase extends TestCase
      */
     protected static $baseUri;
 
+    /**
+     * @var WebServerRunner
+     */
+    private static $webServerRunner;
+
     public static function setUpBeforeClass(): void
     {
         self::$webServerDir = (string) realpath(
             __DIR__  . '/..' . self::FIXTURES_RELATIVE_PATH . self::FIXTURES_HTML_RELATIVE_PATH
         );
+
+        self::$webServerRunner = new WebServerRunner(self::$webServerDir);
+        self::$webServerRunner->start();
 
         self::startWebServer();
         self::$client = PantherClient::createChromeClient(null, null, [], self::$baseUri);
@@ -56,27 +65,12 @@ abstract class AbstractTestCase extends TestCase
 
     public static function startWebServer(): void
     {
-        if (null !== static::$webServerManager) {
-            return;
-        }
-
-        self::$webServerManager = new WebServerManager(
-            (string) static::$webServerDir,
-            self::$defaultOptions['hostname'],
-            self::$defaultOptions['port']
-        );
-        self::$webServerManager->start();
-
         self::$baseUri = sprintf('http://%s:%s', self::$defaultOptions['hostname'], self::$defaultOptions['port']);
     }
 
-
     public static function stopWebServer()
     {
-        if (null !== self::$webServerManager) {
-            self::$webServerManager->quit();
-            self::$webServerManager = null;
-        }
+        self::$webServerRunner->stop();
 
         if (null !== self::$client) {
             self::$client->quit(false);
