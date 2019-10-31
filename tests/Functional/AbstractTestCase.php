@@ -51,7 +51,7 @@ abstract class AbstractTestCase extends TestCase
         static::stopWebServer();
     }
 
-    public static function stopWebServer()
+    private static function stopWebServer()
     {
         self::$webServerRunner->stop();
         self::$pantherClientFactory->destroyClient(self::$client);
