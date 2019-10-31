@@ -6,27 +6,18 @@ use Symfony\Component\Panther\ProcessManager\WebServerManager;
 
 class WebServerRunner
 {
-    const DEFAULT_HOSTNAME = '127.0.0.1';
-    const DEFAULT_PORT = 9080;
-
     private $webServerDir;
-
-    /**
-     * @var array
-     */
-    private static $defaultOptions = [
-        'hostname' => self::DEFAULT_HOSTNAME,
-        'port' => self::DEFAULT_PORT,
-    ];
+    private $options = [];
 
     /**
      * @var WebServerManager|null
      */
     private $webServerManager;
 
-    public function __construct(string $webServerDir)
+    public function __construct(string $webServerDir, array $options = [])
     {
         $this->webServerDir = $webServerDir;
+        $this->options = array_merge(Options::getDefault(), $options);
     }
 
     public function start(): void
@@ -49,8 +40,8 @@ class WebServerRunner
     {
         return new WebServerManager(
             $this->webServerDir,
-            self::$defaultOptions['hostname'],
-            self::$defaultOptions['port']
+            $this->options['hostname'],
+            $this->options['port']
         );
     }
 }

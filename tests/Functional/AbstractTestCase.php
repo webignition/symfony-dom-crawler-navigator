@@ -3,6 +3,7 @@
 namespace webignition\SymfonyDomCrawlerNavigator\Tests\Functional;
 
 use PHPUnit\Framework\TestCase;
+use webignition\SymfonyDomCrawlerNavigator\Tests\Services\Options;
 use webignition\SymfonyDomCrawlerNavigator\Tests\Services\PantherClientContainer;
 use webignition\SymfonyDomCrawlerNavigator\Tests\Services\WebServerRunner;
 
@@ -15,19 +16,6 @@ abstract class AbstractTestCase extends TestCase
      * @var string|null
      */
     protected static $webServerDir;
-
-    /**
-     * @var array
-     */
-    protected static $defaultOptions = [
-        'hostname' => '127.0.0.1',
-        'port' => 9080,
-    ];
-
-    /**
-     * @var string|null
-     */
-    protected static $baseUri;
 
     /**
      * @var WebServerRunner
@@ -48,11 +36,7 @@ abstract class AbstractTestCase extends TestCase
         self::$webServerRunner = new WebServerRunner(self::$webServerDir);
         self::$webServerRunner->start();
 
-        self::$baseUri = sprintf('http://%s:%s', self::$defaultOptions['hostname'], self::$defaultOptions['port']);
-
-        self::$pantherClientContainer = new PantherClientContainer(
-            self::$baseUri
-        );
+        self::$pantherClientContainer = new PantherClientContainer(Options::getBaseUri());
     }
 
     public static function tearDownAfterClass(): void
