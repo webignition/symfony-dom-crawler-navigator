@@ -2,8 +2,13 @@
 
 namespace webignition\SymfonyDomCrawlerNavigator\Tests\Functional;
 
+use webignition\BasePantherTestCase\AbstractBrowserTestCase;
+
 abstract class AbstractTestCase extends AbstractBrowserTestCase
 {
+    const FIXTURES_RELATIVE_PATH = '/fixtures';
+    const FIXTURES_HTML_RELATIVE_PATH = '/html';
+
     public static function setUpBeforeClass(): void
     {
         self::$webServerDir = __DIR__
