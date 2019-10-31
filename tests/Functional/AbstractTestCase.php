@@ -3,20 +3,13 @@
 namespace webignition\SymfonyDomCrawlerNavigator\Tests\Functional;
 
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Panther\Client as PantherClient;
-use Symfony\Component\Panther\ProcessManager\WebServerManager;
-use webignition\SymfonyDomCrawlerNavigator\Tests\Services\PantherClientFactory;
+use webignition\SymfonyDomCrawlerNavigator\Tests\Services\PantherClientContainer;
 use webignition\SymfonyDomCrawlerNavigator\Tests\Services\WebServerRunner;
 
 abstract class AbstractTestCase extends TestCase
 {
     const FIXTURES_RELATIVE_PATH = '/fixtures';
     const FIXTURES_HTML_RELATIVE_PATH = '/html';
-
-    /**
-     * @var PantherClient
-     */
-    protected static $client;
 
     /**
      * @var string|null
@@ -32,11 +25,6 @@ abstract class AbstractTestCase extends TestCase
     ];
 
     /**
-     * @var WebServerManager|null
-     */
-    protected static $webServerManager;
-
-    /**
      * @var string|null
      */
     protected static $baseUri;
@@ -47,9 +35,9 @@ abstract class AbstractTestCase extends TestCase
     private static $webServerRunner;
 
     /**
-     * @var PantherClientFactory
+     * @var PantherClientContainer
      */
-    private static $pantherClientFactory;
+    protected static $pantherClientContainer;
 
     public static function setUpBeforeClass(): void
     {
@@ -62,8 +50,9 @@ abstract class AbstractTestCase extends TestCase
 
         self::$baseUri = sprintf('http://%s:%s', self::$defaultOptions['hostname'], self::$defaultOptions['port']);
 
-        self::$pantherClientFactory = new PantherClientFactory();
-        self::$client = self::$pantherClientFactory->create(self::$baseUri);
+        self::$pantherClientContainer = new PantherClientContainer(
+            self::$baseUri
+        );
     }
 
     public static function tearDownAfterClass(): void
@@ -74,6 +63,6 @@ abstract class AbstractTestCase extends TestCase
     public static function stopWebServer()
     {
         self::$webServerRunner->stop();
-        self::$pantherClientFactory->destroy(self::$client);
+        self::$pantherClientContainer->destroy();
     }
 }
