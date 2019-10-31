@@ -14,11 +14,6 @@ abstract class AbstractTestCase extends TestCase
     const FIXTURES_HTML_RELATIVE_PATH = '/html';
 
     /**
-     * @var string|null
-     */
-    protected static $webServerDir;
-
-    /**
      * @var WebServerRunner
      */
     private static $webServerRunner;
@@ -35,11 +30,11 @@ abstract class AbstractTestCase extends TestCase
 
     public static function setUpBeforeClass(): void
     {
-        self::$webServerDir = (string) realpath(
+        $webServerDir = (string) realpath(
             __DIR__  . '/..' . self::FIXTURES_RELATIVE_PATH . self::FIXTURES_HTML_RELATIVE_PATH
         );
 
-        self::$webServerRunner = new WebServerRunner(self::$webServerDir);
+        self::$webServerRunner = new WebServerRunner($webServerDir);
         self::$webServerRunner->start();
 
         self::$pantherClientFactory = new PantherClientFactory();
