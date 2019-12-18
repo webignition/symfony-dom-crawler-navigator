@@ -75,9 +75,9 @@ class CollectionPositionFinderTest extends \PHPUnit\Framework\TestCase
     public function testFindThrowsException(
         int $ordinalPosition,
         int $collectionCount,
-        string $expectedException
+        \Exception $expectedException
     ) {
-        $this->expectException($expectedException);
+        $this->expectExceptionObject($expectedException);
 
         $this->collectionPositionFinder->find($ordinalPosition, $collectionCount);
     }
@@ -88,22 +88,22 @@ class CollectionPositionFinderTest extends \PHPUnit\Framework\TestCase
             'ordinalPosition: zero, collectionCount: non-zero' => [
                 'ordinalPosition' => 0,
                 'collectionCount' => 1,
-                'expectedException' => PositionCannotBeZeroException::class,
+                'expectedException' => new PositionCannotBeZeroException(1),
             ],
             'ordinalPosition: positive, collectionCount: zero' => [
                 'ordinalPosition' => 1,
                 'collectionCount' => 0,
-                'expectedException' => PositionOutOfBoundsException::class,
+                'expectedException' => new PositionOutOfBoundsException(1, 0),
             ],
             'ordinalPosition greater than collection count, collection count non-zero' => [
                 'ordinalPosition' => 3,
                 'collectionCount' => 2,
-                'expectedException' => PositionOutOfBoundsException::class,
+                'expectedException' => new PositionOutOfBoundsException(3, 2),
             ],
             'ordinalPosition greater than collection -count, collection count non-zero' => [
                 'ordinalPosition' => -3,
                 'collectionCount' => 2,
-                'expectedException' => PositionOutOfBoundsException::class,
+                'expectedException' => new PositionOutOfBoundsException(-3, 2),
             ],
         ];
     }

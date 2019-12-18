@@ -8,6 +8,9 @@ use webignition\DomElementLocator\ElementLocatorInterface;
 
 class UnknownElementException extends AbstractElementException
 {
+    /**
+     * @var ElementLocatorInterface|null
+     */
     private $scopeLocator;
 
     public function __construct(ElementLocatorInterface $elementLocator)
@@ -15,7 +18,7 @@ class UnknownElementException extends AbstractElementException
         parent::__construct($elementLocator, 'Unknown element "' . $elementLocator->getLocator() . '"');
     }
 
-    public function setScopeLocator(ElementLocatorInterface $scopeLocator)
+    public function setScopeLocator(ElementLocatorInterface $scopeLocator): void
     {
         $this->scopeLocator = $scopeLocator;
     }

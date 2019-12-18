@@ -34,7 +34,7 @@ class Navigator
         );
     }
 
-    public function setCrawler(Crawler $crawler)
+    public function setCrawler(Crawler $crawler): void
     {
         $this->crawler = $crawler;
     }
