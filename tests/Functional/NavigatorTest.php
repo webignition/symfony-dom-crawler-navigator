@@ -1,6 +1,6 @@
 <?php
-/** @noinspection PhpUnhandledExceptionInspection */
-/** @noinspection PhpDocSignatureInspection */
+
+declare(strict_types=1);
 
 namespace webignition\SymfonyDomCrawlerNavigator\Tests\Functional;
 
@@ -144,8 +144,8 @@ class NavigatorTest extends AbstractTestCase
      * @dataProvider findOneSuccessDataProvider
      */
     public function testFindOneSuccess(
-        ElementLocatorInterface$elementIdentifier,
-        ?ElementLocatorInterface$scope,
+        ElementLocatorInterface $elementIdentifier,
+        ?ElementLocatorInterface $scope,
         callable $assertions
     ) {
         $crawler = self::$client->request('GET', '/basic.html');
@@ -201,8 +201,8 @@ class NavigatorTest extends AbstractTestCase
      * @dataProvider hasSuccessDataProvider
      */
     public function testHasSuccess(
-        ElementLocatorInterface$elementIdentifier,
-        ?ElementLocatorInterface$scope,
+        ElementLocatorInterface $elementIdentifier,
+        ?ElementLocatorInterface $scope,
         bool $expectedHas
     ) {
         $crawler = self::$client->request('GET', '/basic.html');
@@ -246,8 +246,8 @@ class NavigatorTest extends AbstractTestCase
      * @dataProvider hasOneSuccessDataProvider
      */
     public function testHasOneSuccess(
-        ElementLocatorInterface$elementIdentifier,
-        ?ElementLocatorInterface$scope,
+        ElementLocatorInterface $elementIdentifier,
+        ?ElementLocatorInterface $scope,
         bool $expectedHas
     ) {
         $crawler = self::$client->request('GET', '/basic.html');
@@ -286,10 +286,10 @@ class NavigatorTest extends AbstractTestCase
      * @dataProvider findThrowsUnknownElementExceptionDataProvider
      */
     public function testFindThrowsUnknownElementException(
-        ElementLocatorInterface$elementLocator,
-        ?ElementLocatorInterface$scopeLocator,
-        ElementLocatorInterface$expectedExceptionElementLocator,
-        ?ElementLocatorInterface$expectedExceptionScopeLocator
+        ElementLocatorInterface $elementLocator,
+        ?ElementLocatorInterface $scopeLocator,
+        ElementLocatorInterface $expectedExceptionElementLocator,
+        ?ElementLocatorInterface $expectedExceptionScopeLocator
     ) {
         $crawler = self::$client->request('GET', '/basic.html');
         $navigator = Navigator::create($crawler);
@@ -374,8 +374,8 @@ class NavigatorTest extends AbstractTestCase
      * @dataProvider findOneThrowsOverlyBroadLocatorExceptionDataProvider
      */
     public function testFindOneThrowsOverlyBroadLocatorException(
-        ElementLocatorInterface$elementLocator,
-        ?ElementLocatorInterface$scopeLocator,
+        ElementLocatorInterface $elementLocator,
+        ?ElementLocatorInterface $scopeLocator,
         int $expectedCollectionCount
     ) {
         $crawler = self::$client->request('GET', '/basic.html');

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace webignition\SymfonyDomCrawlerNavigator;
 
 use Symfony\Component\Panther\DomCrawler\Crawler;
@@ -10,7 +12,7 @@ use webignition\SymfonyDomCrawlerNavigator\Exception\UnknownElementException;
 
 class CrawlerFactory
 {
-    const DEFAULT_ORDINAL_POSITION = 1;
+    public const DEFAULT_ORDINAL_POSITION = 1;
 
     private $collectionPositionFinder;
 
