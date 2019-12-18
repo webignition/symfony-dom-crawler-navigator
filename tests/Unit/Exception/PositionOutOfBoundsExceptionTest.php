@@ -1,6 +1,6 @@
 <?php
-/** @noinspection PhpUnhandledExceptionInspection */
-/** @noinspection PhpDocSignatureInspection */
+
+declare(strict_types=1);
 
 namespace webignition\SymfonyDomCrawlerNavigator\Tests\Unit\Exception;
 
@@ -8,8 +8,8 @@ use webignition\SymfonyDomCrawlerNavigator\Exception\PositionOutOfBoundsExceptio
 
 class PositionOutOfBoundsExceptionTest extends \PHPUnit\Framework\TestCase
 {
-    const COLLECTION_COUNT = 3;
-    const ORDINAL_POSITION = 4;
+    private const COLLECTION_COUNT = 3;
+    private const ORDINAL_POSITION = 4;
 
     /**
      * @var PositionOutOfBoundsException

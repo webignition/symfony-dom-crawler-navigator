@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace webignition\SymfonyDomCrawlerNavigator\Exception;
 
 abstract class AbstractInvalidPositionException extends \Exception implements InvalidPositionExceptionInterface

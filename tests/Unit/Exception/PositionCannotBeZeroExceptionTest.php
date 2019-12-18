@@ -1,6 +1,6 @@
 <?php
-/** @noinspection PhpUnhandledExceptionInspection */
-/** @noinspection PhpDocSignatureInspection */
+
+declare(strict_types=1);
 
 namespace webignition\SymfonyDomCrawlerNavigator\Tests\Unit\Exception;
 
@@ -8,7 +8,7 @@ use webignition\SymfonyDomCrawlerNavigator\Exception\PositionCannotBeZeroExcepti
 
 class PositionCannotBeZeroExceptionTest extends \PHPUnit\Framework\TestCase
 {
-    const COLLECTION_COUNT = 3;
+    private const COLLECTION_COUNT = 3;
 
     /**
      * @var PositionCannotBeZeroException
