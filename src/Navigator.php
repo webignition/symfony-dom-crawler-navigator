@@ -49,7 +49,25 @@ class Navigator
      */
     public function find(ElementIdentifierInterface $elementIdentifier): WebDriverElementCollectionInterface
     {
-        return $this->doFind($elementIdentifier);
+        $scopeCrawler = $this->createScopeCrawler($elementIdentifier);
+
+        $elementCrawler = $this->crawlerFactory->createElementCrawler($elementIdentifier, $scopeCrawler);
+
+        $elements = [];
+
+        foreach ($elementCrawler as $remoteWebElement) {
+            $elements[] = $remoteWebElement;
+        }
+
+        if (RadioButtonCollection::is($elements)) {
+            return new RadioButtonCollection($elements);
+        }
+
+        if (SelectOptionCollection::is($elements)) {
+            return new SelectOptionCollection($elements);
+        }
+
+        return new WebDriverElementCollection($elements);
     }
 
     /**
@@ -113,43 +131,12 @@ class Navigator
     private function examineCollectionCount(ElementIdentifierInterface $elementIdentifier, callable $examiner): bool
     {
         try {
-            $collection = $this->doFind($elementIdentifier);
+            $collection = $this->find($elementIdentifier);
 
             return $examiner($collection);
         } catch (UnknownElementException | InvalidElementPositionException $exception) {
             return false;
         }
-    }
-
-    /**
-     * @param ElementIdentifierInterface $elementIdentifier
-     *
-     * @return WebDriverElementCollectionInterface
-     *
-     * @throws InvalidElementPositionException
-     * @throws UnknownElementException
-     */
-    private function doFind(ElementIdentifierInterface $elementIdentifier): WebDriverElementCollectionInterface
-    {
-        $scopeCrawler = $this->createScopeCrawler($elementIdentifier);
-
-        $elementCrawler = $this->crawlerFactory->createElementCrawler($elementIdentifier, $scopeCrawler);
-
-        $elements = [];
-
-        foreach ($elementCrawler as $remoteWebElement) {
-            $elements[] = $remoteWebElement;
-        }
-
-        if (RadioButtonCollection::is($elements)) {
-            return new RadioButtonCollection($elements);
-        }
-
-        if (SelectOptionCollection::is($elements)) {
-            return new SelectOptionCollection($elements);
-        }
-
-        return new WebDriverElementCollection($elements);
     }
 
     /**
