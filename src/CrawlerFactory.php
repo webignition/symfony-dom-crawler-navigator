@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace webignition\SymfonyDomCrawlerNavigator;
 
 use Symfony\Component\Panther\DomCrawler\Crawler;
-use webignition\DomElementLocator\ElementLocatorInterface;
+use webignition\DomElementIdentifier\ElementIdentifierInterface;
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidElementPositionException;
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidPositionExceptionInterface;
 use webignition\SymfonyDomCrawlerNavigator\Exception\UnknownElementException;
@@ -29,69 +29,69 @@ class CrawlerFactory
     }
 
     /**
-     * @param ElementLocatorInterface $elementLocator
-     * @param Crawler $crawler
+     * @param ElementIdentifierInterface $elementIdentifier
+     * @param Crawler $scope
      *
      * @return Crawler
      *
      * @throws InvalidElementPositionException
      * @throws UnknownElementException
      */
-    public function createElementCrawler(ElementLocatorInterface $elementLocator, Crawler $crawler): Crawler
+    public function createElementCrawler(ElementIdentifierInterface $elementIdentifier, Crawler $scope): Crawler
     {
-        $collection = $this->createFilteredCrawler($elementLocator, $crawler);
+        $collection = $this->createFilteredCrawler($elementIdentifier, $scope);
 
-        $ordinalPosition = $elementLocator->getOrdinalPosition();
+        $ordinalPosition = $elementIdentifier->getOrdinalPosition();
         if (null === $ordinalPosition) {
             return $collection;
         }
 
-        return $this->createSingleElementCrawler($elementLocator, $crawler);
+        return $this->createSingleElementCrawler($elementIdentifier, $scope);
     }
 
     /**
-     * @param ElementLocatorInterface $elementLocator
-     * @param Crawler $crawler
+     * @param ElementIdentifierInterface $elementIdentifier
+     * @param Crawler $scope
      *
      * @return Crawler
      *
      * @throws InvalidElementPositionException
      * @throws UnknownElementException
      */
-    public function createSingleElementCrawler(ElementLocatorInterface $elementLocator, Crawler $crawler): Crawler
+    public function createSingleElementCrawler(ElementIdentifierInterface $elementIdentifier, Crawler $scope): Crawler
     {
-        $collection = $this->createFilteredCrawler($elementLocator, $crawler);
+        $collection = $this->createFilteredCrawler($elementIdentifier, $scope);
 
         try {
             $crawlerPosition = $this->collectionPositionFinder->find(
-                $elementLocator->getOrdinalPosition() ?? self::DEFAULT_ORDINAL_POSITION,
+                $elementIdentifier->getOrdinalPosition() ?? self::DEFAULT_ORDINAL_POSITION,
                 count($collection)
             );
 
             return $collection->eq($crawlerPosition);
         } catch (InvalidPositionExceptionInterface $invalidPositionException) {
-            throw new InvalidElementPositionException($elementLocator, $invalidPositionException);
+            throw new InvalidElementPositionException($elementIdentifier, $invalidPositionException);
         }
     }
 
     /**
-     * @param ElementLocatorInterface $elementLocator
-     * @param Crawler $crawler
+     * @param ElementIdentifierInterface $elementIdentifier
+     * @param Crawler $scope
      *
      * @return Crawler
      *
      * @throws UnknownElementException
      */
-    private function createFilteredCrawler(ElementLocatorInterface $elementLocator, Crawler $crawler): Crawler
+    private function createFilteredCrawler(ElementIdentifierInterface $elementIdentifier, Crawler $scope): Crawler
     {
-        $locator = $elementLocator->getLocator();
+        $locator = $elementIdentifier->getLocator();
 
-        $collection = $elementLocator->isCssSelector()
-            ? $crawler->filter($locator)
-            : $crawler->filterXPath($locator);
+        $collection = $elementIdentifier->isCssSelector()
+            ? $scope->filter($locator)
+            : $scope->filterXPath($locator);
 
         if (0 === count($collection)) {
-            throw new UnknownElementException($elementLocator);
+            throw new UnknownElementException($elementIdentifier);
         }
 
         return $collection;

@@ -4,25 +4,25 @@ declare(strict_types=1);
 
 namespace webignition\SymfonyDomCrawlerNavigator\Exception;
 
-use webignition\DomElementLocator\ElementLocatorInterface;
+use webignition\DomElementIdentifier\ElementIdentifierInterface;
 
 abstract class AbstractElementException extends \Exception
 {
-    private $elementLocator;
+    private $elementIdentifier;
 
     public function __construct(
-        ElementLocatorInterface $elementLocator,
+        ElementIdentifierInterface $elementIdentifier,
         string $message = '',
         int $code = 0,
         \Throwable $previous = null
     ) {
         parent::__construct($message, $code, $previous);
 
-        $this->elementLocator = $elementLocator;
+        $this->elementIdentifier = $elementIdentifier;
     }
 
-    public function getElementLocator(): ElementLocatorInterface
+    public function getElementIdentifier(): ElementIdentifierInterface
     {
-        return $this->elementLocator;
+        return $this->elementIdentifier;
     }
 }
