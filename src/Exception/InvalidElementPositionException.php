@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace webignition\SymfonyDomCrawlerNavigator\Exception;
 
-use webignition\DomElementLocator\ElementLocatorInterface;
+use webignition\DomElementIdentifier\ElementIdentifierInterface;
 
 class InvalidElementPositionException extends AbstractElementException
 {
     public function __construct(
-        ElementLocatorInterface $elementLocator,
+        ElementIdentifierInterface $elementIdentifier,
         InvalidPositionExceptionInterface $invalidPositionException
     ) {
         $message = sprintf(
             'Invalid position "%d" for locator "%s"',
-            $elementLocator->getOrdinalPosition(),
-            $elementLocator->getLocator()
+            $elementIdentifier->getOrdinalPosition(),
+            $elementIdentifier->getLocator()
         );
 
-        parent::__construct($elementLocator, $message, 0, $invalidPositionException);
+        parent::__construct($elementIdentifier, $message, 0, $invalidPositionException);
     }
 }

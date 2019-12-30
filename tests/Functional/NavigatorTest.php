@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace webignition\SymfonyDomCrawlerNavigator\Tests\Functional;
 
 use Facebook\WebDriver\WebDriverElement;
-use webignition\DomElementLocator\ElementLocator;
-use webignition\DomElementLocator\ElementLocatorInterface;
+use webignition\DomElementIdentifier\ElementIdentifier;
+use webignition\DomElementIdentifier\ElementIdentifierInterface;
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidElementPositionException;
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidPositionExceptionInterface;
 use webignition\SymfonyDomCrawlerNavigator\Exception\OverlyBroadLocatorException;
@@ -29,15 +29,12 @@ class NavigatorTest extends AbstractTestCase
     /**
      * @dataProvider findSuccessDataProvider
      */
-    public function testFindSuccess(
-        ElementLocatorInterface $elementIdentifier,
-        ?ElementLocatorInterface $scope,
-        callable $assertions
-    ) {
+    public function testFindSuccess(ElementIdentifierInterface $elementIdentifier, callable $assertions)
+    {
         $crawler = self::$client->request('GET', '/basic.html');
         $navigator = Navigator::create($crawler);
 
-        $element = $navigator->find($elementIdentifier, $scope);
+        $element = $navigator->find($elementIdentifier);
 
         $assertions($element);
     }
@@ -46,8 +43,7 @@ class NavigatorTest extends AbstractTestCase
     {
         return [
             'first h1 with css selector' => [
-                'elementIdentifier' => new ElementLocator('h1', 1),
-                'scopeLocator' => null,
+                'elementIdentifier' => new ElementIdentifier('h1', 1),
                 'assertions' => function (WebDriverElementCollection $collection) {
                     $this->assertCount(1, $collection);
 
@@ -60,8 +56,7 @@ class NavigatorTest extends AbstractTestCase
                 },
             ],
             'first h1 with xpath expression' => [
-                'elementIdentifier' => new ElementLocator('//h1', 1),
-                'scopeLocator' => null,
+                'elementIdentifier' => new ElementIdentifier('//h1', 1),
                 'assertions' => function (WebDriverElementCollection $collection) {
                     $this->assertCount(1, $collection);
 
@@ -74,8 +69,7 @@ class NavigatorTest extends AbstractTestCase
                 },
             ],
             'second h1 with css selector' => [
-                'elementIdentifier' => new ElementLocator('h1', 2),
-                'scopeLocator' => null,
+                'elementIdentifier' => new ElementIdentifier('h1', 2),
                 'assertions' => function (WebDriverElementCollection $collection) {
                     $this->assertCount(1, $collection);
 
@@ -88,8 +82,10 @@ class NavigatorTest extends AbstractTestCase
                 },
             ],
             'css-selector input scoped to css-selector second form' => [
-                'elementIdentifier' => new ElementLocator('input', 1),
-                'scopeLocator' => new ElementLocator('form[action="/action2"]', 1),
+                'elementIdentifier' => (new ElementIdentifier('input', 1))
+                    ->withParentIdentifier(
+                        new ElementIdentifier('form[action="/action2"]', 1)
+                    ),
                 'assertions' => function (WebDriverElementCollection $collection) {
                     $this->assertCount(1, $collection);
 
@@ -101,9 +97,30 @@ class NavigatorTest extends AbstractTestCase
                     }
                 },
             ],
+            'deep nested descendant' => [
+                'elementIdentifier' => (new ElementIdentifier('option[value="2"]'))
+                    ->withParentIdentifier(
+                        (new ElementIdentifier('form[action="/action2"]', 1))
+                            ->withParentIdentifier(
+                                new ElementIdentifier('body')
+                            )
+                    ),
+                'assertions' => function (SelectOptionCollection $collection) {
+                    $this->assertCount(1, $collection);
+
+                    $element = $collection->get(0);
+                    $this->assertInstanceOf(WebDriverElement::class, $element);
+
+                    if ($element instanceof WebDriverElement) {
+                        $this->assertSame('two', $element->getText());
+                    }
+                },
+            ],
             'css-selector input scoped to xpath-expression second form' => [
-                'elementIdentifier' => new ElementLocator('input', 1),
-                'scopeLocator' => new ElementLocator('//form', 2),
+                'elementIdentifier' => (new ElementIdentifier('input', 1))
+                    ->withParentIdentifier(
+                        new ElementIdentifier('//form', 2)
+                    ),
                 'assertions' => function (WebDriverElementCollection $collection) {
                     $this->assertCount(1, $collection);
 
@@ -116,8 +133,7 @@ class NavigatorTest extends AbstractTestCase
                 },
             ],
             'radio group' => [
-                'elementIdentifier' => new ElementLocator('[name="radio-group-name"]'),
-                'scopeLocator' => null,
+                'elementIdentifier' => new ElementIdentifier('[name="radio-group-name"]'),
                 'assertions' => function (RadioButtonCollection $collection) {
                     $this->assertCount(3, $collection);
 
@@ -127,8 +143,7 @@ class NavigatorTest extends AbstractTestCase
                 },
             ],
             'select options' => [
-                'elementIdentifier' => new ElementLocator('select option'),
-                'scopeLocator' => null,
+                'elementIdentifier' => new ElementIdentifier('select option'),
                 'assertions' => function (SelectOptionCollection $collection) {
                     $this->assertCount(3, $collection);
 
@@ -143,15 +158,12 @@ class NavigatorTest extends AbstractTestCase
     /**
      * @dataProvider findOneSuccessDataProvider
      */
-    public function testFindOneSuccess(
-        ElementLocatorInterface $elementIdentifier,
-        ?ElementLocatorInterface $scope,
-        callable $assertions
-    ) {
+    public function testFindOneSuccess(ElementIdentifierInterface $elementIdentifier, callable $assertions)
+    {
         $crawler = self::$client->request('GET', '/basic.html');
         $navigator = Navigator::create($crawler);
 
-        $element = $navigator->findOne($elementIdentifier, $scope);
+        $element = $navigator->findOne($elementIdentifier);
 
         $assertions($element);
     }
@@ -160,38 +172,55 @@ class NavigatorTest extends AbstractTestCase
     {
         return [
             'first h1 with css selector' => [
-                'elementIdentifier' => new ElementLocator('h1', 1),
-                'scopeLocator' => null,
+                'elementIdentifier' => new ElementIdentifier('h1', 1),
                 'assertions' => function (WebDriverElement $element) {
                     $this->assertSame('Hello', $element->getText());
                 },
             ],
             'first h1 with xpath expression' => [
-                'elementIdentifier' => new ElementLocator('//h1', 1),
-                'scopeLocator' => null,
+                'elementIdentifier' => new ElementIdentifier('//h1', 1),
                 'assertions' => function (WebDriverElement $element) {
                     $this->assertSame('Hello', $element->getText());
                 },
             ],
             'second h1 with css selector' => [
-                'elementIdentifier' => new ElementLocator('h1', 2),
-                'scopeLocator' => null,
+                'elementIdentifier' => new ElementIdentifier('h1', 2),
                 'assertions' => function (WebDriverElement $element) {
                     $this->assertSame('Main', $element->getText());
                 },
             ],
             'css-selector input scoped to css-selector second form' => [
-                'elementIdentifier' => new ElementLocator('input', 1),
-                'scopeLocator' => new ElementLocator('form[action="/action2"]', 1),
+                'elementIdentifier' => (new ElementIdentifier('input', 1))
+                    ->withParentIdentifier(
+                        new ElementIdentifier('form[action="/action2"]', 1)
+                    ),
                 'assertions' => function (WebDriverElement $element) {
                     $this->assertSame('input-2', $element->getAttribute('name'));
                 },
             ],
             'css-selector input scoped to xpath-expression second form' => [
-                'elementIdentifier' => new ElementLocator('input', 1),
-                'scopeLocator' => new ElementLocator('//form', 2),
+                'elementIdentifier' => (new ElementIdentifier('input', 1))
+                    ->withParentIdentifier(
+                        new ElementIdentifier('//form', 2)
+                    ),
                 'assertions' => function (WebDriverElement $element) {
                     $this->assertSame('input-2', $element->getAttribute('name'));
+                },
+            ],
+            'deep nested descendant' => [
+                'elementIdentifier' => (new ElementIdentifier('option[value="2"]'))
+                    ->withParentIdentifier(
+                        (new ElementIdentifier('form[action="/action2"]', 1))
+                            ->withParentIdentifier(
+                                new ElementIdentifier('body')
+                            )
+                    ),
+                'assertions' => function (WebDriverElement $element) {
+                    $this->assertInstanceOf(WebDriverElement::class, $element);
+
+                    if ($element instanceof WebDriverElement) {
+                        $this->assertSame('two', $element->getText());
+                    }
                 },
             ],
         ];
@@ -200,44 +229,55 @@ class NavigatorTest extends AbstractTestCase
     /**
      * @dataProvider hasSuccessDataProvider
      */
-    public function testHasSuccess(
-        ElementLocatorInterface $elementIdentifier,
-        ?ElementLocatorInterface $scope,
-        bool $expectedHas
-    ) {
+    public function testHasSuccess(ElementIdentifierInterface $elementIdentifier, bool $expectedHas)
+    {
         $crawler = self::$client->request('GET', '/basic.html');
         $navigator = Navigator::create($crawler);
 
-        $this->assertSame($expectedHas, $navigator->has($elementIdentifier, $scope));
+        $this->assertSame($expectedHas, $navigator->has($elementIdentifier));
     }
 
     public function hasSuccessDataProvider(): array
     {
         return [
             'existent element without scope' => [
-                'elementIdentifier' => new ElementLocator('h1', 1),
-                'scopeLocator' => null,
+                'elementIdentifier' => new ElementIdentifier('h1', 1),
                 'expectedHas' => true,
             ],
             'existent collection without scope' => [
-                'elementIdentifier' => new ElementLocator('[name="radio-group-name"]', 1),
-                'scopeLocator' => null,
+                'elementIdentifier' => new ElementIdentifier('[name="radio-group-name"]', 1),
                 'expectedHas' => true,
             ],
             'existent element inside scope' => [
-                'elementIdentifier' => new ElementLocator('input', 1),
-                'scopeLocator' => new ElementLocator('form[action="/action2"]', 1),
+                'elementIdentifier' => (new ElementIdentifier('input', 1))
+                    ->withParentIdentifier(
+                        new ElementIdentifier('form[action="/action2"]', 1)
+                    ),
                 'expectedHas' => true,
             ],
             'existent scope contains non-existent element' => [
-                'elementLocator' => new ElementLocator('.does-not-exist', 1),
-                'scopeLocator' => new ElementLocator('main', 1),
+                'elementIdentifier' => (new ElementIdentifier('.does-not-exist', 1))
+                    ->withParentIdentifier(
+                        new ElementIdentifier('main', 1)
+                    ),
                 'expectedHas' => false,
             ],
             'non-existent scope' => [
-                'elementLocator' => new ElementLocator('input', 1),
-                'scopeLocator' => new ElementLocator('.does-not-exist', 1),
+                'elementIdentifier' => (new ElementIdentifier('input', 1))
+                    ->withParentIdentifier(
+                        new ElementIdentifier('.does-not-exist', 1)
+                    ),
                 'expectedHas' => false,
+            ],
+            'deep nested descendant' => [
+                'elementIdentifier' => (new ElementIdentifier('option[value="2"]'))
+                    ->withParentIdentifier(
+                        (new ElementIdentifier('form[action="/action2"]', 1))
+                            ->withParentIdentifier(
+                                new ElementIdentifier('body')
+                            )
+                    ),
+                'expectedHas' => true,
             ],
         ];
     }
@@ -245,39 +285,51 @@ class NavigatorTest extends AbstractTestCase
     /**
      * @dataProvider hasOneSuccessDataProvider
      */
-    public function testHasOneSuccess(
-        ElementLocatorInterface $elementIdentifier,
-        ?ElementLocatorInterface $scope,
-        bool $expectedHas
-    ) {
+    public function testHasOneSuccess(ElementIdentifierInterface $elementIdentifier, bool $expectedHas)
+    {
         $crawler = self::$client->request('GET', '/basic.html');
         $navigator = Navigator::create($crawler);
 
-        $this->assertSame($expectedHas, $navigator->hasOne($elementIdentifier, $scope));
+        $this->assertSame($expectedHas, $navigator->hasOne($elementIdentifier));
     }
 
     public function hasOneSuccessDataProvider(): array
     {
         return [
             'existent element without scope' => [
-                'elementIdentifier' => new ElementLocator('h1', 1),
-                'scopeLocator' => null,
+                'elementIdentifier' => new ElementIdentifier('h1', 1),
                 'expectedHas' => true,
             ],
             'existent element inside scope' => [
-                'elementIdentifier' => new ElementLocator('input', 1),
-                'scopeLocator' => new ElementLocator('form[action="/action2"]', 1),
+                'elementIdentifier' => (new ElementIdentifier('input', 1))
+                    ->withParentIdentifier(
+                        new ElementIdentifier('form[action="/action2"]', 1)
+                    ),
                 'expectedHas' => true,
             ],
             'existent scope contains non-existent element' => [
-                'elementLocator' => new ElementLocator('.does-not-exist', 1),
-                'scopeLocator' => new ElementLocator('main', 1),
+                'elementIdentifier' => (new ElementIdentifier('.does-not-exist', 1))
+                    ->withParentIdentifier(
+                        new ElementIdentifier('main', 1)
+                    ),
                 'expectedHas' => false,
             ],
             'non-existent scope' => [
-                'elementLocator' => new ElementLocator('input', 1),
-                'scopeLocator' => new ElementLocator('.does-not-exist', 1),
+                'elementIdentifier' => (new ElementIdentifier('input', 1))
+                    ->withParentIdentifier(
+                        new ElementIdentifier('.does-not-exist', 1)
+                    ),
                 'expectedHas' => false,
+            ],
+            'deep nested descendant' => [
+                'elementIdentifier' => (new ElementIdentifier('option[value="2"]'))
+                    ->withParentIdentifier(
+                        (new ElementIdentifier('form[action="/action2"]', 1))
+                            ->withParentIdentifier(
+                                new ElementIdentifier('body')
+                            )
+                    ),
+                'expectedHas' => true,
             ],
         ];
     }
@@ -286,43 +338,44 @@ class NavigatorTest extends AbstractTestCase
      * @dataProvider findThrowsUnknownElementExceptionDataProvider
      */
     public function testFindThrowsUnknownElementException(
-        ElementLocatorInterface $elementLocator,
-        ?ElementLocatorInterface $scopeLocator,
-        ElementLocatorInterface $expectedExceptionElementLocator,
-        ?ElementLocatorInterface $expectedExceptionScopeLocator
+        ElementIdentifierInterface $elementIdentifier,
+        ElementIdentifierInterface $expectedExceptionElementIdentifier
     ) {
         $crawler = self::$client->request('GET', '/basic.html');
         $navigator = Navigator::create($crawler);
 
         try {
-            $navigator->find($elementLocator, $scopeLocator);
+            $navigator->find($elementIdentifier);
             $this->fail('UnknownElementException not thrown');
         } catch (UnknownElementException $unknownElementException) {
-            $this->assertEquals($expectedExceptionElementLocator, $unknownElementException->getElementLocator());
-            $this->assertEquals($expectedExceptionScopeLocator, $unknownElementException->getScopeLocator());
+            $this->assertEquals($expectedExceptionElementIdentifier, $unknownElementException->getElementIdentifier());
         }
     }
 
     public function findThrowsUnknownElementExceptionDataProvider(): array
     {
         return [
-            'element locator refers to unknown element, without scope' => [
-                'elementLocator' => new ElementLocator('.does-not-exist', 1),
-                'scopeLocator' => null,
-                'expectedExceptionElementLocator' => new ElementLocator('.does-not-exist', 1),
-                'expectedExceptionScope' => null,
+            'identifier refers to unknown element, no scope' => [
+                'elementIdentifier' => new ElementIdentifier('.does-not-exist', 1),
+                'expectedExceptionElementIdentifier' => new ElementIdentifier('.does-not-exist', 1),
             ],
-            'element locator refers to unknown element, with scope' => [
-                'elementLocator' => new ElementLocator('.does-not-exist', 1),
-                'scopeLocator' => new ElementLocator('main', 1),
-                'expectedExceptionElementLocator' => new ElementLocator('.does-not-exist', 1),
-                'expectedExceptionScope' => new ElementLocator('main', 1),
+            'identifier refers to unknown element, with parent scope' => [
+                'elementIdentifier' => (new ElementIdentifier('.does-not-exist', 1))
+                    ->withParentIdentifier(
+                        new ElementIdentifier('main', 1)
+                    ),
+                'expectedExceptionElementIdentifier' => (new ElementIdentifier('.does-not-exist', 1))
+                    ->withParentIdentifier(
+                        new ElementIdentifier('main', 1)
+                    ),
             ],
-            'scope locator refers to unknown element' => [
-                'elementLocator' => new ElementLocator('input', 1),
-                'scopeLocator' => new ElementLocator('.does-not-exist', 1),
-                'expectedExceptionElementLocator' => new ElementLocator('.does-not-exist', 1),
-                'expectedExceptionScope' => new ElementLocator('.does-not-exist', 1),
+            'parent refers to unknown element' => [
+                'elementIdentifier' => (new ElementIdentifier('input', 1))
+                    ->withParentIdentifier(
+                        new ElementIdentifier('.does-not-exist', 1)
+                    ),
+                'scopeLocator' => new ElementIdentifier('.does-not-exist', 1),
+                'expectedExceptionElementIdentifier' => new ElementIdentifier('.does-not-exist', 1),
             ],
         ];
     }
@@ -335,13 +388,13 @@ class NavigatorTest extends AbstractTestCase
         $crawler = self::$client->request('GET', '/basic.html');
         $navigator = Navigator::create($crawler);
 
-        $elementLocator = new ElementLocator($cssLocator, $ordinalPosition);
+        $elementLocator = new ElementIdentifier($cssLocator, $ordinalPosition);
 
         try {
             $navigator->find($elementLocator);
             $this->fail('InvalidPositionExceptionInterface instance not thrown');
         } catch (InvalidElementPositionException $invalidElementPositionException) {
-            $this->assertSame($elementLocator, $invalidElementPositionException->getElementLocator());
+            $this->assertSame($elementLocator, $invalidElementPositionException->getElementIdentifier());
 
             $previousException = $invalidElementPositionException->getPrevious();
             $this->assertInstanceOf(InvalidPositionExceptionInterface::class, $previousException);
@@ -374,15 +427,14 @@ class NavigatorTest extends AbstractTestCase
      * @dataProvider findOneThrowsOverlyBroadLocatorExceptionDataProvider
      */
     public function testFindOneThrowsOverlyBroadLocatorException(
-        ElementLocatorInterface $elementLocator,
-        ?ElementLocatorInterface $scopeLocator,
+        ElementIdentifierInterface $elementIdentifier,
         int $expectedCollectionCount
     ) {
         $crawler = self::$client->request('GET', '/basic.html');
         $navigator = Navigator::create($crawler);
 
         try {
-            $navigator->findOne($elementLocator, $scopeLocator);
+            $navigator->findOne($elementIdentifier);
             $this->fail('OverlyBroadLocatorException not thrown');
         } catch (OverlyBroadLocatorException $overlyBroadLocatorException) {
             $this->assertCount($expectedCollectionCount, $overlyBroadLocatorException->getCollection());
@@ -393,8 +445,7 @@ class NavigatorTest extends AbstractTestCase
     {
         return [
             'collection locator overly broad, no scope' => [
-                'elementLocator' => new ElementLocator('h1'),
-                'scopeLocator' => null,
+                'elementIdentifier' => new ElementIdentifier('h1'),
                 'expectedCollectionCount' => 2,
             ],
         ];

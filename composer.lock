@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c81b321e5d77a53d9e23d84e79047a3b",
+    "content-hash": "5af65516e45fbd54802ab5ecbd6b7dc2",
     "packages": [
         {
             "name": "facebook/webdriver",
@@ -840,16 +840,16 @@
         },
         {
             "name": "webignition/php-dom-element-identifier",
-            "version": "0.6",
+            "version": "0.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webignition/php-dom-element-identifier.git",
-                "reference": "d5917717c0674c3c2e6a00fabafd73abeea4250e"
+                "reference": "ba0f0830e3411bbcee6c7d6bc99e7266baa16763"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webignition/php-dom-element-identifier/zipball/d5917717c0674c3c2e6a00fabafd73abeea4250e",
-                "reference": "d5917717c0674c3c2e6a00fabafd73abeea4250e",
+                "url": "https://api.github.com/repos/webignition/php-dom-element-identifier/zipball/ba0f0830e3411bbcee6c7d6bc99e7266baa16763",
+                "reference": "ba0f0830e3411bbcee6c7d6bc99e7266baa16763",
                 "shasum": ""
             },
             "require": {
@@ -878,7 +878,7 @@
                 }
             ],
             "homepage": "https://github.com/webignition/php-dom-element-identifier",
-            "time": "2019-12-30T11:28:14+00:00"
+            "time": "2019-12-30T15:33:49+00:00"
         },
         {
             "name": "webignition/php-dom-element-locator",

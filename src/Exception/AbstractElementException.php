@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace webignition\SymfonyDomCrawlerNavigator\Exception;
 
 use webignition\DomElementIdentifier\ElementIdentifierInterface;
-use webignition\DomElementLocator\ElementLocatorInterface;
 
 abstract class AbstractElementException extends \Exception
 {
@@ -22,7 +21,7 @@ abstract class AbstractElementException extends \Exception
         $this->elementIdentifier = $elementIdentifier;
     }
 
-    public function getElementIdentifier(): ElementLocatorInterface
+    public function getElementIdentifier(): ElementIdentifierInterface
     {
         return $this->elementIdentifier;
     }
