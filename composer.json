@@ -33,7 +33,7 @@
     },
     "require": {
         "php": ">=7.2",
-        "symfony/panther": "^0.6",
+        "symfony/panther": "^0.6|^0.7",
         "webignition/web-driver-element-collection": ">=0.5,<1",
         "facebook/webdriver": "^1.7.1",
         "webignition/php-dom-element-locator": ">=0.1,<1",
