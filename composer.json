@@ -46,6 +46,7 @@
         "phpstan/phpstan": "^0.12",
         "mockery/mockery": "^1.2",
         "phpstan/phpstan-mockery": "^0.12",
-        "webignition/symfony-panther-webserver-runner": "^0.2.0"
+        "webignition/symfony-panther-webserver-runner": "^0.2.0",
+        "webignition/base-panther-test-case": ">=0.7,<1"
     }
 }
