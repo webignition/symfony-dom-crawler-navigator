@@ -13,7 +13,7 @@ use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidElementPositionExcep
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidPositionExceptionInterface;
 use webignition\SymfonyDomCrawlerNavigator\Exception\UnknownElementException;
 
-class CrawlerFactoryTest extends AbstractTestCase
+class CrawlerFactoryTest extends AbstractBrowserTestCase
 {
     /**
      * @dataProvider createElementCrawlerSuccessDataProvider

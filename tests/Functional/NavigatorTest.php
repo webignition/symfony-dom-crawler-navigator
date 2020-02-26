@@ -16,7 +16,7 @@ use webignition\WebDriverElementCollection\RadioButtonCollection;
 use webignition\WebDriverElementCollection\SelectOptionCollection;
 use webignition\WebDriverElementCollection\WebDriverElementCollection;
 
-class NavigatorTest extends AbstractTestCase
+class NavigatorTest extends AbstractBrowserTestCase
 {
     public function testCreate()
     {
@@ -138,6 +138,8 @@ class NavigatorTest extends AbstractTestCase
                     $this->assertCount(3, $collection);
 
                     foreach ($collection as $elementIndex => $element) {
+                        /** @var WebDriverElement $element */
+
                         $this->assertSame((string) ($elementIndex + 1), $element->getAttribute('value'));
                     }
                 },
@@ -148,6 +150,8 @@ class NavigatorTest extends AbstractTestCase
                     $this->assertCount(3, $collection);
 
                     foreach ($collection as $elementIndex => $element) {
+                        /** @var WebDriverElement $element */
+
                         $this->assertSame((string) ($elementIndex + 1), $element->getAttribute('value'));
                     }
                 },

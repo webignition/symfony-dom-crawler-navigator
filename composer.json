@@ -33,12 +33,12 @@
     },
     "require": {
         "php": ">=7.2",
-        "symfony/panther": "^0.6|^0.7",
+        "symfony/panther": "^0.7",
         "webignition/web-driver-element-collection": ">=0.5,<1",
-        "facebook/webdriver": "^1.7.1",
         "webignition/php-dom-element-locator": ">=0.1,<1",
         "phpstan/extension-installer": "^1.0",
-        "webignition/php-dom-element-identifier": ">=0.7,<1"
+        "webignition/php-dom-element-identifier": ">=0.7,<1",
+        "php-webdriver/webdriver": "^1.8"
     },
     "require-dev": {
         "phpunit/phpunit": "~8.0",
@@ -46,6 +46,6 @@
         "phpstan/phpstan": "^0.12",
         "mockery/mockery": "^1.2",
         "phpstan/phpstan-mockery": "^0.12",
-        "webignition/base-panther-test-case": "^0.1.0"
+        "webignition/symfony-panther-webserver-runner": "^0.2.0"
     }
 }
