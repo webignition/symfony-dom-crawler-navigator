@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "69ace1a2d2747e53113e28731f0eeed9",
+    "content-hash": "f21771f994c4ff140ba945a28d63184e",
     "packages": [
         {
             "name": "php-webdriver/webdriver",
@@ -2667,27 +2667,27 @@
         },
         {
             "name": "webignition/base-panther-test-case",
-            "version": "0.7",
+            "version": "0.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webignition/base-panther-test-case.git",
-                "reference": "ba1373b84717e918293a3456bf48de1b4a1d5845"
+                "reference": "184df095381b3d78a7749b2a737317cb28cdec95"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webignition/base-panther-test-case/zipball/ba1373b84717e918293a3456bf48de1b4a1d5845",
-                "reference": "ba1373b84717e918293a3456bf48de1b4a1d5845",
+                "url": "https://api.github.com/repos/webignition/base-panther-test-case/zipball/184df095381b3d78a7749b2a737317cb28cdec95",
+                "reference": "184df095381b3d78a7749b2a737317cb28cdec95",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.2",
                 "phpunit/phpunit": "~8.0",
-                "symfony/panther": "^0.7"
+                "symfony/panther": "^0.7",
+                "webignition/symfony-panther-webserver-runner": ">=0.2,<1"
             },
             "require-dev": {
                 "phpstan/phpstan": "^0.12",
-                "squizlabs/php_codesniffer": "3.*",
-                "webignition/symfony-panther-webserver-runner": ">=0.1,<1"
+                "squizlabs/php_codesniffer": "3.*"
             },
             "type": "library",
             "autoload": {
@@ -2706,7 +2706,7 @@
                 }
             ],
             "homepage": "https://github.com/webignition/base-panther-test-case",
-            "time": "2020-02-26T18:58:04+00:00"
+            "time": "2020-02-26T19:21:50+00:00"
         },
         {
             "name": "webignition/symfony-panther-webserver-runner",
