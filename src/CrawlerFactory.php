@@ -14,7 +14,7 @@ class CrawlerFactory
 {
     public const DEFAULT_ORDINAL_POSITION = 1;
 
-    private $collectionPositionFinder;
+    private CollectionPositionFinder $collectionPositionFinder;
 
     public function __construct(CollectionPositionFinder $collectionPositionFinder)
     {

@@ -8,7 +8,7 @@ use webignition\DomElementIdentifier\ElementIdentifierInterface;
 
 abstract class AbstractElementException extends \Exception
 {
-    private $elementIdentifier;
+    private ElementIdentifierInterface $elementIdentifier;
 
     public function __construct(
         ElementIdentifierInterface $elementIdentifier,

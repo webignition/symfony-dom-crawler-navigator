@@ -10,10 +10,7 @@ class PositionCannotBeZeroExceptionTest extends \PHPUnit\Framework\TestCase
 {
     private const COLLECTION_COUNT = 3;
 
-    /**
-     * @var PositionCannotBeZeroException
-     */
-    private $exception;
+    private PositionCannotBeZeroException $exception;
 
     protected function setUp(): void
     {
