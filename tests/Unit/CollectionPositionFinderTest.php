@@ -10,10 +10,7 @@ use webignition\SymfonyDomCrawlerNavigator\Exception\PositionOutOfBoundsExceptio
 
 class CollectionPositionFinderTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var CollectionPositionFinder
-     */
-    private $collectionPositionFinder;
+    private CollectionPositionFinder $collectionPositionFinder;
 
     protected function setUp(): void
     {

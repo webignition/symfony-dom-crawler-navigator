@@ -9,7 +9,7 @@ use webignition\WebDriverElementCollection\WebDriverElementCollectionInterface;
 
 class OverlyBroadLocatorException extends AbstractElementException
 {
-    private $collection;
+    private WebDriverElementCollectionInterface $collection;
 
     public function __construct(
         ElementIdentifierInterface $elementIdentifier,

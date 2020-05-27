@@ -6,8 +6,8 @@ namespace webignition\SymfonyDomCrawlerNavigator\Exception;
 
 abstract class AbstractInvalidPositionException extends \Exception implements InvalidPositionExceptionInterface
 {
-    private $ordinalPosition;
-    private $collectionCount;
+    private int $ordinalPosition;
+    private int $collectionCount;
 
     public function __construct(int $ordinalPosition, int $collectionCount, string $message)
     {

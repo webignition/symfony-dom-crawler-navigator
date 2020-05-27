@@ -11,10 +11,7 @@ class PositionOutOfBoundsExceptionTest extends \PHPUnit\Framework\TestCase
     private const COLLECTION_COUNT = 3;
     private const ORDINAL_POSITION = 4;
 
-    /**
-     * @var PositionOutOfBoundsException
-     */
-    private $exception;
+    private PositionOutOfBoundsException $exception;
 
     protected function setUp(): void
     {

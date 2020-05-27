@@ -17,8 +17,8 @@ use webignition\WebDriverElementCollection\WebDriverElementCollectionInterface;
 
 class Navigator
 {
-    private $crawler;
-    private $crawlerFactory;
+    private Crawler $crawler;
+    private CrawlerFactory $crawlerFactory;
 
     public function __construct(Crawler $crawler, CrawlerFactory $crawlerFactory)
     {
