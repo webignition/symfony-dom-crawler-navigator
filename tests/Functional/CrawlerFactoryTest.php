@@ -10,6 +10,7 @@ use webignition\DomElementIdentifier\ElementIdentifier;
 use webignition\DomElementIdentifier\ElementIdentifierInterface;
 use webignition\SymfonyDomCrawlerNavigator\CrawlerFactory;
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidElementPositionException;
+use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidLocatorException;
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidPositionExceptionInterface;
 use webignition\SymfonyDomCrawlerNavigator\Exception\UnknownElementException;
 
@@ -170,6 +171,36 @@ class CrawlerFactoryTest extends AbstractBrowserTestCase
             'ordinalPosition less than negative collection count' => [
                 'cssLocator' => 'h1',
                 'ordinalPosition' => -3,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider createElementCrawlerThrowsInvalidLocatorExceptionDataProvider
+     */
+    public function testCreateElementCrawlerThrowsInvalidLocatorException(string $locator)
+    {
+        $crawler = self::$client->request('GET', '/index.html');
+        $crawlerFactory = CrawlerFactory::create();
+
+        $elementIdentifier = new ElementIdentifier($locator);
+
+        try {
+            $crawlerFactory->createElementCrawler($elementIdentifier, $crawler);
+            $this->fail('InvalidLocatorException instance not thrown');
+        } catch (InvalidLocatorException $invalidLocatorException) {
+            $this->assertSame($elementIdentifier, $invalidLocatorException->getElementIdentifier());
+        }
+    }
+
+    public function createElementCrawlerThrowsInvalidLocatorExceptionDataProvider(): array
+    {
+        return [
+            'invalid CSS selector' => [
+                'locator' => 'a[href=/basic.html]',
+            ],
+            'invalid XPath expression' => [
+                'locator' => 'a[href=/basic.html]',
             ],
         ];
     }

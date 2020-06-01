@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace webignition\SymfonyDomCrawlerNavigator;
 
+use Facebook\WebDriver\Exception\InvalidSelectorException;
 use Symfony\Component\Panther\DomCrawler\Crawler;
 use webignition\DomElementIdentifier\ElementIdentifierInterface;
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidElementPositionException;
+use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidLocatorException;
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidPositionExceptionInterface;
 use webignition\SymfonyDomCrawlerNavigator\Exception\UnknownElementException;
 
@@ -35,6 +37,7 @@ class CrawlerFactory
      * @return Crawler
      *
      * @throws InvalidElementPositionException
+     * @throws InvalidLocatorException
      * @throws UnknownElementException
      */
     public function createElementCrawler(ElementIdentifierInterface $elementIdentifier, Crawler $scope): Crawler
@@ -56,6 +59,7 @@ class CrawlerFactory
      * @return Crawler
      *
      * @throws InvalidElementPositionException
+     * @throws InvalidLocatorException
      * @throws UnknownElementException
      */
     public function createSingleElementCrawler(ElementIdentifierInterface $elementIdentifier, Crawler $scope): Crawler
@@ -80,15 +84,20 @@ class CrawlerFactory
      *
      * @return Crawler
      *
+     * @throws InvalidLocatorException
      * @throws UnknownElementException
      */
     private function createFilteredCrawler(ElementIdentifierInterface $elementIdentifier, Crawler $scope): Crawler
     {
         $locator = $elementIdentifier->getLocator();
 
-        $collection = $elementIdentifier->isCssSelector()
-            ? $scope->filter($locator)
-            : $scope->filterXPath($locator);
+        try {
+            $collection = $elementIdentifier->isCssSelector()
+                ? $scope->filter($locator)
+                : $scope->filterXPath($locator);
+        } catch (InvalidSelectorException $invalidSelectorException) {
+            throw new InvalidLocatorException($elementIdentifier, $invalidSelectorException);
+        }
 
         if (0 === count($collection)) {
             throw new UnknownElementException($elementIdentifier);
