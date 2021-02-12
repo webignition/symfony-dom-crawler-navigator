@@ -20,12 +20,12 @@ class PositionOutOfBoundsExceptionTest extends \PHPUnit\Framework\TestCase
         $this->exception = new PositionOutOfBoundsException(self::ORDINAL_POSITION, self::COLLECTION_COUNT);
     }
 
-    public function testGetOrdinalPosition()
+    public function testGetOrdinalPosition(): void
     {
         $this->assertSame(self::ORDINAL_POSITION, $this->exception->getOrdinalPosition());
     }
 
-    public function testGetCollectionCount()
+    public function testGetCollectionCount(): void
     {
         $this->assertSame(self::COLLECTION_COUNT, $this->exception->getCollectionCount());
     }

@@ -19,8 +19,10 @@ class CrawlerFactoryTest extends AbstractBrowserTestCase
     /**
      * @dataProvider createElementCrawlerSuccessDataProvider
      */
-    public function testCreateElementCrawlerSuccess(ElementIdentifierInterface $elementIdentifier, callable $assertions)
-    {
+    public function testCreateElementCrawlerSuccess(
+        ElementIdentifierInterface $elementIdentifier,
+        callable $assertions
+    ): void {
         $crawler = self::$client->request('GET', '/basic.html');
 
         $crawlerFactory = CrawlerFactory::create();
@@ -30,6 +32,9 @@ class CrawlerFactoryTest extends AbstractBrowserTestCase
         $assertions($elementCrawler);
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function createElementCrawlerSuccessDataProvider(): array
     {
         return [
@@ -43,7 +48,7 @@ class CrawlerFactoryTest extends AbstractBrowserTestCase
                         'Main',
                     ];
 
-                    /* @var WebDriverElement $element */
+                    /** @var WebDriverElement $element */
                     foreach ($crawler as $index => $element) {
                         if ($element instanceof WebDriverElement) {
                             $this->assertSame($expectedElementGetText[$index], $element->getText());
@@ -81,7 +86,7 @@ class CrawlerFactoryTest extends AbstractBrowserTestCase
     public function testCreateSingleElementCrawlerSuccess(
         ElementIdentifierInterface $elementIdentifier,
         callable $assertions
-    ) {
+    ): void {
         $crawler = self::$client->request('GET', '/basic.html');
         $crawlerFactory = CrawlerFactory::create();
 
@@ -91,6 +96,9 @@ class CrawlerFactoryTest extends AbstractBrowserTestCase
         $assertions($elementCrawler);
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function createSingleElementCrawlerSuccessDataProvider(): array
     {
         return [
@@ -115,7 +123,7 @@ class CrawlerFactoryTest extends AbstractBrowserTestCase
         ];
     }
 
-    public function testCreateElementCrawlerThrowsUnknownElementException()
+    public function testCreateElementCrawlerThrowsUnknownElementException(): void
     {
         $crawler = self::$client->request('GET', '/basic.html');
         $crawlerFactory = CrawlerFactory::create();
@@ -136,7 +144,7 @@ class CrawlerFactoryTest extends AbstractBrowserTestCase
     public function testCreateElementCrawlerThrowsInvalidElementPositionException(
         string $cssLocator,
         int $ordinalPosition
-    ) {
+    ): void {
         $crawler = self::$client->request('GET', '/basic.html');
         $crawlerFactory = CrawlerFactory::create();
 
@@ -157,6 +165,9 @@ class CrawlerFactoryTest extends AbstractBrowserTestCase
         }
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function createElementCrawlerThrowsInvalidElementPositionDataProvider(): array
     {
         return [
@@ -178,7 +189,7 @@ class CrawlerFactoryTest extends AbstractBrowserTestCase
     /**
      * @dataProvider createElementCrawlerThrowsInvalidLocatorExceptionDataProvider
      */
-    public function testCreateElementCrawlerThrowsInvalidLocatorException(string $locator)
+    public function testCreateElementCrawlerThrowsInvalidLocatorException(string $locator): void
     {
         $crawler = self::$client->request('GET', '/index.html');
         $crawlerFactory = CrawlerFactory::create();
@@ -193,6 +204,9 @@ class CrawlerFactoryTest extends AbstractBrowserTestCase
         }
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function createElementCrawlerThrowsInvalidLocatorExceptionDataProvider(): array
     {
         return [

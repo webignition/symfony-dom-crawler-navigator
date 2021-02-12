@@ -26,10 +26,13 @@ class CollectionPositionFinderTest extends \PHPUnit\Framework\TestCase
         int $ordinalPosition,
         int $collectionCount,
         int $expectedPosition
-    ) {
+    ): void {
         $this->assertSame($expectedPosition, $this->collectionPositionFinder->find($ordinalPosition, $collectionCount));
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function findSuccessDataProvider(): array
     {
         return [
@@ -73,12 +76,15 @@ class CollectionPositionFinderTest extends \PHPUnit\Framework\TestCase
         int $ordinalPosition,
         int $collectionCount,
         \Exception $expectedException
-    ) {
+    ): void {
         $this->expectExceptionObject($expectedException);
 
         $this->collectionPositionFinder->find($ordinalPosition, $collectionCount);
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function findThrowsExceptionDataProvider(): array
     {
         return [
