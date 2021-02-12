@@ -18,7 +18,7 @@ use webignition\WebDriverElementCollection\WebDriverElementCollection;
 
 class NavigatorTest extends AbstractBrowserTestCase
 {
-    public function testCreate()
+    public function testCreate(): void
     {
         $crawler = self::$client->request('GET', '/index.html');
         $navigator = Navigator::create($crawler);
@@ -29,7 +29,7 @@ class NavigatorTest extends AbstractBrowserTestCase
     /**
      * @dataProvider findSuccessDataProvider
      */
-    public function testFindSuccess(ElementIdentifierInterface $elementIdentifier, callable $assertions)
+    public function testFindSuccess(ElementIdentifierInterface $elementIdentifier, callable $assertions): void
     {
         $crawler = self::$client->request('GET', '/basic.html');
         $navigator = Navigator::create($crawler);
@@ -39,6 +39,9 @@ class NavigatorTest extends AbstractBrowserTestCase
         $assertions($element);
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function findSuccessDataProvider(): array
     {
         return [
@@ -138,8 +141,6 @@ class NavigatorTest extends AbstractBrowserTestCase
                     $this->assertCount(3, $collection);
 
                     foreach ($collection as $elementIndex => $element) {
-                        /** @var WebDriverElement $element */
-
                         $this->assertSame((string) ($elementIndex + 1), $element->getAttribute('value'));
                     }
                 },
@@ -150,8 +151,6 @@ class NavigatorTest extends AbstractBrowserTestCase
                     $this->assertCount(3, $collection);
 
                     foreach ($collection as $elementIndex => $element) {
-                        /** @var WebDriverElement $element */
-
                         $this->assertSame((string) ($elementIndex + 1), $element->getAttribute('value'));
                     }
                 },
@@ -162,7 +161,7 @@ class NavigatorTest extends AbstractBrowserTestCase
     /**
      * @dataProvider findOneSuccessDataProvider
      */
-    public function testFindOneSuccess(ElementIdentifierInterface $elementIdentifier, callable $assertions)
+    public function testFindOneSuccess(ElementIdentifierInterface $elementIdentifier, callable $assertions): void
     {
         $crawler = self::$client->request('GET', '/basic.html');
         $navigator = Navigator::create($crawler);
@@ -172,6 +171,9 @@ class NavigatorTest extends AbstractBrowserTestCase
         $assertions($element);
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function findOneSuccessDataProvider(): array
     {
         return [
@@ -233,7 +235,7 @@ class NavigatorTest extends AbstractBrowserTestCase
     /**
      * @dataProvider hasSuccessDataProvider
      */
-    public function testHasSuccess(ElementIdentifierInterface $elementIdentifier, bool $expectedHas)
+    public function testHasSuccess(ElementIdentifierInterface $elementIdentifier, bool $expectedHas): void
     {
         $crawler = self::$client->request('GET', '/basic.html');
         $navigator = Navigator::create($crawler);
@@ -241,6 +243,9 @@ class NavigatorTest extends AbstractBrowserTestCase
         $this->assertSame($expectedHas, $navigator->has($elementIdentifier));
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function hasSuccessDataProvider(): array
     {
         return [
@@ -289,7 +294,7 @@ class NavigatorTest extends AbstractBrowserTestCase
     /**
      * @dataProvider hasOneSuccessDataProvider
      */
-    public function testHasOneSuccess(ElementIdentifierInterface $elementIdentifier, bool $expectedHas)
+    public function testHasOneSuccess(ElementIdentifierInterface $elementIdentifier, bool $expectedHas): void
     {
         $crawler = self::$client->request('GET', '/basic.html');
         $navigator = Navigator::create($crawler);
@@ -297,6 +302,9 @@ class NavigatorTest extends AbstractBrowserTestCase
         $this->assertSame($expectedHas, $navigator->hasOne($elementIdentifier));
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function hasOneSuccessDataProvider(): array
     {
         return [
@@ -344,7 +352,7 @@ class NavigatorTest extends AbstractBrowserTestCase
     public function testFindThrowsUnknownElementException(
         ElementIdentifierInterface $elementIdentifier,
         ElementIdentifierInterface $expectedExceptionElementIdentifier
-    ) {
+    ): void {
         $crawler = self::$client->request('GET', '/basic.html');
         $navigator = Navigator::create($crawler);
 
@@ -356,6 +364,9 @@ class NavigatorTest extends AbstractBrowserTestCase
         }
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function findThrowsUnknownElementExceptionDataProvider(): array
     {
         return [
@@ -387,7 +398,7 @@ class NavigatorTest extends AbstractBrowserTestCase
     /**
      * @dataProvider findThrowsInvalidPositionExceptionDataProvider
      */
-    public function testFindThrowsInvalidPositionException(string $cssLocator, int $ordinalPosition)
+    public function testFindThrowsInvalidPositionException(string $cssLocator, int $ordinalPosition): void
     {
         $crawler = self::$client->request('GET', '/basic.html');
         $navigator = Navigator::create($crawler);
@@ -409,6 +420,9 @@ class NavigatorTest extends AbstractBrowserTestCase
         }
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function findThrowsInvalidPositionExceptionDataProvider(): array
     {
         return [
@@ -433,7 +447,7 @@ class NavigatorTest extends AbstractBrowserTestCase
     public function testFindOneThrowsOverlyBroadLocatorException(
         ElementIdentifierInterface $elementIdentifier,
         int $expectedCollectionCount
-    ) {
+    ): void {
         $crawler = self::$client->request('GET', '/basic.html');
         $navigator = Navigator::create($crawler);
 
@@ -445,6 +459,9 @@ class NavigatorTest extends AbstractBrowserTestCase
         }
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function findOneThrowsOverlyBroadLocatorExceptionDataProvider(): array
     {
         return [

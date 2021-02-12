@@ -19,12 +19,12 @@ class PositionCannotBeZeroExceptionTest extends \PHPUnit\Framework\TestCase
         $this->exception = new PositionCannotBeZeroException(self::COLLECTION_COUNT);
     }
 
-    public function testGetOrdinalPosition()
+    public function testGetOrdinalPosition(): void
     {
         $this->assertSame(0, $this->exception->getOrdinalPosition());
     }
 
-    public function testGetCollectionCount()
+    public function testGetCollectionCount(): void
     {
         $this->assertSame(self::COLLECTION_COUNT, $this->exception->getCollectionCount());
     }
