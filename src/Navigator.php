@@ -8,6 +8,7 @@ use Facebook\WebDriver\WebDriverElement;
 use Symfony\Component\Panther\DomCrawler\Crawler;
 use webignition\DomElementIdentifier\ElementIdentifierInterface;
 use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidElementPositionException;
+use webignition\SymfonyDomCrawlerNavigator\Exception\InvalidLocatorException;
 use webignition\SymfonyDomCrawlerNavigator\Exception\OverlyBroadLocatorException;
 use webignition\SymfonyDomCrawlerNavigator\Exception\UnknownElementException;
 use webignition\WebDriverElementCollection\RadioButtonCollection;
@@ -40,12 +41,9 @@ class Navigator
     }
 
     /**
-     * @param ElementIdentifierInterface $elementIdentifier
-     *
-     * @return WebDriverElementCollectionInterface
-     *
      * @throws InvalidElementPositionException
      * @throws UnknownElementException
+     * @throws InvalidLocatorException
      */
     public function find(ElementIdentifierInterface $elementIdentifier): WebDriverElementCollectionInterface
     {
@@ -56,7 +54,9 @@ class Navigator
         $elements = [];
 
         foreach ($elementCrawler as $remoteWebElement) {
-            $elements[] = $remoteWebElement;
+            if ($remoteWebElement instanceof WebDriverElement) {
+                $elements[] = $remoteWebElement;
+            }
         }
 
         if (RadioButtonCollection::is($elements)) {
@@ -71,13 +71,10 @@ class Navigator
     }
 
     /**
-     * @param ElementIdentifierInterface $elementIdentifier
-     *
-     * @return WebDriverElement
-     *
      * @throws InvalidElementPositionException
      * @throws UnknownElementException
      * @throws OverlyBroadLocatorException
+     * @throws InvalidLocatorException
      */
     public function findOne(ElementIdentifierInterface $elementIdentifier): WebDriverElement
     {
@@ -95,9 +92,7 @@ class Navigator
     }
 
     /**
-     * @param ElementIdentifierInterface $elementIdentifier
-     *
-     * @return bool
+     * @throws InvalidLocatorException
      */
     public function has(ElementIdentifierInterface $elementIdentifier): bool
     {
@@ -109,11 +104,9 @@ class Navigator
     }
 
     /**
-     * @param ElementIdentifierInterface $elementIdentifier
-     *
-     * @return bool
+     * @throws InvalidLocatorException
      */
-    public function hasOne($elementIdentifier): bool
+    public function hasOne(ElementIdentifierInterface $elementIdentifier): bool
     {
         $examiner = function (WebDriverElementCollectionInterface $collection) {
             return count($collection) === 1;
@@ -123,10 +116,7 @@ class Navigator
     }
 
     /**
-     * @param ElementIdentifierInterface $elementIdentifier
-     * @param callable $examiner
-     *
-     * @return bool
+     * @throws InvalidLocatorException
      */
     private function examineCollectionCount(ElementIdentifierInterface $elementIdentifier, callable $examiner): bool
     {
@@ -140,12 +130,9 @@ class Navigator
     }
 
     /**
-     * @param ElementIdentifierInterface $elementIdentifier
-     *
-     * @return Crawler
-     *
      * @throws InvalidElementPositionException
      * @throws UnknownElementException
+     * @throws InvalidLocatorException
      */
     private function createScopeCrawler(ElementIdentifierInterface $elementIdentifier): Crawler
     {
