@@ -10,11 +10,6 @@ use webignition\SymfonyDomCrawlerNavigator\Exception\PositionOutOfBoundsExceptio
 class CollectionPositionFinder
 {
     /**
-     * @param int $ordinalPosition
-     * @param int $collectionCount
-     *
-     * @return int
-     *
      * @throws PositionCannotBeZeroException
      * @throws PositionOutOfBoundsException
      */

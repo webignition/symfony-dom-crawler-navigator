@@ -31,11 +31,6 @@ class CrawlerFactory
     }
 
     /**
-     * @param ElementIdentifierInterface $elementIdentifier
-     * @param Crawler $scope
-     *
-     * @return Crawler
-     *
      * @throws InvalidElementPositionException
      * @throws InvalidLocatorException
      * @throws UnknownElementException
@@ -53,11 +48,6 @@ class CrawlerFactory
     }
 
     /**
-     * @param ElementIdentifierInterface $elementIdentifier
-     * @param Crawler $scope
-     *
-     * @return Crawler
-     *
      * @throws InvalidElementPositionException
      * @throws InvalidLocatorException
      * @throws UnknownElementException
@@ -79,11 +69,6 @@ class CrawlerFactory
     }
 
     /**
-     * @param ElementIdentifierInterface $elementIdentifier
-     * @param Crawler $scope
-     *
-     * @return Crawler
-     *
      * @throws InvalidLocatorException
      * @throws UnknownElementException
      */
