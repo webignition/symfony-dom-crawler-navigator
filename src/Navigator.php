@@ -109,7 +109,7 @@ class Navigator
     public function hasOne(ElementIdentifierInterface $elementIdentifier): bool
     {
         $examiner = function (WebDriverElementCollectionInterface $collection) {
-            return count($collection) === 1;
+            return 1 === count($collection);
         };
 
         return $this->examineCollectionCount($elementIdentifier, $examiner);
