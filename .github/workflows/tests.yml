@@ -22,14 +22,13 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-
-      - name: Check PHP Version
-        run: php -v
+          extensions: zip
 
       - name: Download dependencies
-        uses: php-actions/composer@v2
+        uses: php-actions/composer@v6
         with:
-          args: --ignore-platform-reqs --quiet
+          php_version: ${{ matrix.php }}
+          args: --ignore-platform-req=ext-zip
 
       - name: Install browser drivers
         run: ./vendor/bin/bdi detect drivers
