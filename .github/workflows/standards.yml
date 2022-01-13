@@ -36,11 +36,13 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
+          extensions: zip
 
       - name: Download dependencies
         uses: php-actions/composer@v6
         with:
           php_version: ${{ matrix.php }}
+          args: --ignore-platform-req=ext-zip
 
       - name: Run PHPCS
         run: composer cs-phpcs
